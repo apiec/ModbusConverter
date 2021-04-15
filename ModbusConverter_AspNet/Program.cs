@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ModbusConverter
 {
@@ -21,6 +22,11 @@ namespace ModbusConverter
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddHostedService<AnalogInputsUpdater>();
+                    services.AddHostedService<DigitalInputsUpdater>();
                 });
     }
 }
