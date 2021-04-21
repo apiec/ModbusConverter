@@ -228,7 +228,7 @@ namespace EasyModbus
         /// </summary>
         /// <param name="registers">Two Register values received from Modbus</param>
         /// <returns>Connected float value</returns>
-        public static float ConvertRegistersToFloat(int[] registers)
+        public static float ConvertRegistersToFloat(ushort[] registers)
         {
             if (registers.Length != 2)
                 throw new ArgumentException("Input Array length invalid - Array langth must be '2'");
@@ -251,11 +251,11 @@ namespace EasyModbus
         /// <param name="registers">Two Register values received from Modbus</param>
         /// <param name="registerOrder">Desired Word Order (Low Register first or High Register first</param>
         /// <returns>Connected float value</returns>
-        public static float ConvertRegistersToFloat(int[] registers, RegisterOrder registerOrder)
+        public static float ConvertRegistersToFloat(ushort[] registers, RegisterOrder registerOrder)
         {
-            int [] swappedRegisters = {registers[0],registers[1]};
+            ushort[] swappedRegisters = {registers[0],registers[1]};
             if (registerOrder == RegisterOrder.HighLow) 
-                swappedRegisters = new int[] {registers[1],registers[0]};
+                swappedRegisters = new ushort[] {registers[1],registers[0]};
             return ConvertRegistersToFloat(swappedRegisters);
         }
 
@@ -264,7 +264,7 @@ namespace EasyModbus
         /// </summary>
         /// <param name="registers">Two Register values received from Modbus</param>
         /// <returns>Connected 32 Bit Integer value</returns>
-        public static Int32 ConvertRegistersToInt(int[] registers)
+        public static int ConvertRegistersToInt(ushort[] registers)
         {
             if (registers.Length != 2)
                 throw new ArgumentException("Input Array length invalid - Array langth must be '2'");
@@ -287,11 +287,11 @@ namespace EasyModbus
         /// <param name="registers">Two Register values received from Modbus</param>
         /// <param name="registerOrder">Desired Word Order (Low Register first or High Register first</param>
         /// <returns>Connecteds 32 Bit Integer value</returns>
-        public static Int32 ConvertRegistersToInt(int[] registers, RegisterOrder registerOrder)
+        public static Int32 ConvertRegistersToInt(ushort[] registers, RegisterOrder registerOrder)
         {
-            int[] swappedRegisters = { registers[0], registers[1] };
+            ushort[] swappedRegisters = { registers[0], registers[1] };
             if (registerOrder == RegisterOrder.HighLow)
-                swappedRegisters = new int[] { registers[1], registers[0] };
+                swappedRegisters = new ushort[] { registers[1], registers[0] };
             return ConvertRegistersToInt(swappedRegisters);
         }
 
@@ -300,7 +300,7 @@ namespace EasyModbus
         /// </summary>
         /// <param name="registers">four Register values received from Modbus</param>
         /// <returns>64 bit value</returns>
-        public static Int64 ConvertRegistersToLong(int[] registers)
+        public static Int64 ConvertRegistersToLong(ushort[] registers)
         {
             if (registers.Length != 4)
                 throw new ArgumentException("Input Array length invalid - Array langth must be '4'");
@@ -331,13 +331,13 @@ namespace EasyModbus
         /// <param name="registers">four Register values received from Modbus</param>
         /// <param name="registerOrder">Desired Word Order (Low Register first or High Register first</param>
         /// <returns>Connected 64 Bit Integer value</returns>
-        public static Int64 ConvertRegistersToLong(int[] registers, RegisterOrder registerOrder)
+        public static Int64 ConvertRegistersToLong(ushort[] registers, RegisterOrder registerOrder)
         {
             if (registers.Length != 4)
                 throw new ArgumentException("Input Array length invalid - Array langth must be '4'");
-            int[] swappedRegisters = { registers[0], registers[1], registers[2], registers[3] };
+            ushort[] swappedRegisters = { registers[0], registers[1], registers[2], registers[3] };
             if (registerOrder == RegisterOrder.HighLow)
-                swappedRegisters = new int[] { registers[3], registers[2], registers[1], registers[0] };
+                swappedRegisters = new ushort[] { registers[3], registers[2], registers[1], registers[0] };
             return ConvertRegistersToLong(swappedRegisters);
         }
 
@@ -346,7 +346,7 @@ namespace EasyModbus
         /// </summary>
         /// <param name="registers">four Register values received from Modbus</param>
         /// <returns>64 bit value</returns>
-        public static double ConvertRegistersToDouble(int[] registers)
+        public static double ConvertRegistersToDouble(ushort[] registers)
         {
             if (registers.Length != 4)
                 throw new ArgumentException("Input Array length invalid - Array langth must be '4'");
@@ -377,13 +377,13 @@ namespace EasyModbus
         /// <param name="registers">four Register values received from Modbus</param>
         /// <param name="registerOrder">Desired Word Order (Low Register first or High Register first</param>
         /// <returns>Connected double prec. float value</returns>
-        public static double ConvertRegistersToDouble(int[] registers, RegisterOrder registerOrder)
+        public static double ConvertRegistersToDouble(ushort[] registers, RegisterOrder registerOrder)
         {
             if (registers.Length != 4)
                 throw new ArgumentException("Input Array length invalid - Array langth must be '4'");
-            int[] swappedRegisters = { registers[0], registers[1], registers[2], registers[3] };
+            ushort[] swappedRegisters = { registers[0], registers[1], registers[2], registers[3] };
             if (registerOrder == RegisterOrder.HighLow)
-                swappedRegisters = new int[] { registers[3], registers[2], registers[1], registers[0] };
+                swappedRegisters = new ushort[] { registers[3], registers[2], registers[1], registers[0] };
             return ConvertRegistersToDouble(swappedRegisters);
         }
 
@@ -392,7 +392,7 @@ namespace EasyModbus
         /// </summary>
         /// <param name="floatValue">Float value which has to be converted into two registers</param>
         /// <returns>Register values</returns>
-        public static int[] ConvertFloatToRegisters(float floatValue)
+        public static ushort[] ConvertFloatToRegisters(float floatValue)
         {
             byte[] floatBytes = BitConverter.GetBytes(floatValue);
             byte[] highRegisterBytes = 
@@ -410,10 +410,10 @@ namespace EasyModbus
                 0,
                 0
             };
-            int[] returnValue =
+            ushort[] returnValue =
             {
-                BitConverter.ToInt32(lowRegisterBytes,0),
-                BitConverter.ToInt32(highRegisterBytes,0)
+                BitConverter.ToUInt16(lowRegisterBytes,0),
+                BitConverter.ToUInt16(highRegisterBytes,0)
             };
             return returnValue;
         }
@@ -424,12 +424,12 @@ namespace EasyModbus
         /// <param name="floatValue">Float value which has to be converted into two registers</param>
         /// <param name="registerOrder">Desired Word Order (Low Register first or High Register first</param>
         /// <returns>Register values</returns>
-        public static int[] ConvertFloatToRegisters(float floatValue, RegisterOrder registerOrder)
+        public static ushort[] ConvertFloatToRegisters(float floatValue, RegisterOrder registerOrder)
         {
-            int[] registerValues = ConvertFloatToRegisters(floatValue);
-            int[] returnValue = registerValues;
+            ushort[] registerValues = ConvertFloatToRegisters(floatValue);
+            ushort[] returnValue = registerValues;
             if (registerOrder == RegisterOrder.HighLow)
-                returnValue = new Int32[] { registerValues[1], registerValues[0] };
+                returnValue = new ushort[] { registerValues[1], registerValues[0] };
             return returnValue;
         }
 
@@ -438,7 +438,7 @@ namespace EasyModbus
         /// </summary>
         /// <param name="intValue">Int value which has to be converted into two registers</param>
         /// <returns>Register values</returns>
-        public static int[] ConvertIntToRegisters(Int32 intValue)
+        public static ushort[] ConvertIntToRegisters(int intValue)
         {
             byte[] doubleBytes = BitConverter.GetBytes(intValue);
             byte[] highRegisterBytes = 
@@ -456,10 +456,10 @@ namespace EasyModbus
                 0,
                 0
             };
-            int[] returnValue =
+            ushort[] returnValue =
             {
-                BitConverter.ToInt32(lowRegisterBytes,0),
-                BitConverter.ToInt32(highRegisterBytes,0)
+                BitConverter.ToUInt16(lowRegisterBytes,0),
+                BitConverter.ToUInt16(highRegisterBytes,0)
             };
             return returnValue;
         }
@@ -470,12 +470,12 @@ namespace EasyModbus
         /// <param name="intValue">Double value which has to be converted into two registers</param>
         /// <param name="registerOrder">Desired Word Order (Low Register first or High Register first</param>
         /// <returns>Register values</returns>
-        public static int[] ConvertIntToRegisters(Int32 intValue, RegisterOrder registerOrder)
+        public static ushort[] ConvertIntToRegisters(int intValue, RegisterOrder registerOrder)
         {
-            int[] registerValues = ConvertIntToRegisters(intValue);
-            int[] returnValue = registerValues;
+            ushort[] registerValues = ConvertIntToRegisters(intValue);
+            ushort[] returnValue = registerValues;
             if (registerOrder == RegisterOrder.HighLow)
-                returnValue = new Int32[] { registerValues[1], registerValues[0] };
+                returnValue = new ushort[] { registerValues[1], registerValues[0] };
             return returnValue;
         }
 
@@ -484,7 +484,7 @@ namespace EasyModbus
         /// </summary>
         /// <param name="longValue">long value which has to be converted into four registers</param>
         /// <returns>Register values</returns>
-        public static int[] ConvertLongToRegisters(Int64 longValue)
+        public static ushort[] ConvertLongToRegisters(long longValue)
         {
             byte[] longBytes = BitConverter.GetBytes(longValue);
             byte[] highRegisterBytes =
@@ -516,12 +516,12 @@ namespace EasyModbus
                 0,
                 0
             };
-            int[] returnValue =
+            ushort[] returnValue =
             {
-                BitConverter.ToInt32(lowRegisterBytes,0),
-                BitConverter.ToInt32(lowHighRegisterBytes,0),
-                BitConverter.ToInt32(highLowRegisterBytes,0),
-                BitConverter.ToInt32(highRegisterBytes,0)
+                BitConverter.ToUInt16(lowRegisterBytes,0),
+                BitConverter.ToUInt16(lowHighRegisterBytes,0),
+                BitConverter.ToUInt16(highLowRegisterBytes,0),
+                BitConverter.ToUInt16(highRegisterBytes,0)
             };
             return returnValue;
         }
@@ -532,12 +532,12 @@ namespace EasyModbus
         /// <param name="longValue">long value which has to be converted into four registers</param>
         /// <param name="registerOrder">Desired Word Order (Low Register first or High Register first</param>
         /// <returns>Register values</returns>
-        public static int[] ConvertLongToRegisters(Int64 longValue, RegisterOrder registerOrder)
+        public static ushort[] ConvertLongToRegisters(long longValue, RegisterOrder registerOrder)
         {
-            int[] registerValues = ConvertLongToRegisters(longValue);
-            int[] returnValue = registerValues;
+            ushort[] registerValues = ConvertLongToRegisters(longValue);
+            ushort[] returnValue = registerValues;
             if (registerOrder == RegisterOrder.HighLow)
-                returnValue = new int[] { registerValues[3], registerValues[2], registerValues[1], registerValues[0] };
+                returnValue = new ushort[] { registerValues[3], registerValues[2], registerValues[1], registerValues[0] };
             return returnValue;
         }
 
@@ -546,7 +546,7 @@ namespace EasyModbus
         /// </summary>
         /// <param name="doubleValue">double value which has to be converted into four registers</param>
         /// <returns>Register values</returns>
-        public static int[] ConvertDoubleToRegisters(double doubleValue)
+        public static ushort[] ConvertDoubleToRegisters(double doubleValue)
         {
             byte[] doubleBytes = BitConverter.GetBytes(doubleValue);
             byte[] highRegisterBytes =
@@ -578,12 +578,12 @@ namespace EasyModbus
                 0,
                 0
             };
-            int[] returnValue =
+            ushort[] returnValue =
             {
-                BitConverter.ToInt32(lowRegisterBytes,0),
-                BitConverter.ToInt32(lowHighRegisterBytes,0),
-                BitConverter.ToInt32(highLowRegisterBytes,0),
-                BitConverter.ToInt32(highRegisterBytes,0)
+                BitConverter.ToUInt16(lowRegisterBytes,0),
+                BitConverter.ToUInt16(lowHighRegisterBytes,0),
+                BitConverter.ToUInt16(highLowRegisterBytes,0),
+                BitConverter.ToUInt16(highRegisterBytes,0)
             };
             return returnValue;
         }
@@ -594,12 +594,12 @@ namespace EasyModbus
         /// <param name="doubleValue">double value which has to be converted into four registers</param>
         /// <param name="registerOrder">Desired Word Order (Low Register first or High Register first</param>
         /// <returns>Register values</returns>
-        public static int[] ConvertDoubleToRegisters(double doubleValue, RegisterOrder registerOrder)
+        public static ushort[] ConvertDoubleToRegisters(double doubleValue, RegisterOrder registerOrder)
         {
-            int[] registerValues = ConvertDoubleToRegisters(doubleValue);
-            int[] returnValue = registerValues;
+            ushort[] registerValues = ConvertDoubleToRegisters(doubleValue);
+            ushort[] returnValue = registerValues;
             if (registerOrder == RegisterOrder.HighLow)
-                returnValue = new int[] { registerValues[3], registerValues[2], registerValues[1], registerValues[0] };
+                returnValue = new ushort[] { registerValues[3], registerValues[2], registerValues[1], registerValues[0] };
             return returnValue;
         }
 
@@ -610,7 +610,7 @@ namespace EasyModbus
         /// <param name="offset">First Register containing the String to convert</param>
         /// <param name="stringLength">number of characters in String (must be even)</param>
         /// <returns>Converted String</returns>
-        public static string ConvertRegistersToString(int[] registers, int offset, int stringLength)
+        public static string ConvertRegistersToString(ushort[] registers, int offset, int stringLength)
         { 
         byte[] result = new byte[stringLength];
         byte[] registerResult = new byte[2];
@@ -629,16 +629,16 @@ namespace EasyModbus
         /// </summary>
         /// <param name="registers">Register array received via Modbus</param>
         /// <returns>Converted String</returns>
-        public static int[] ConvertStringToRegisters(string stringToConvert)
+        public static ushort[] ConvertStringToRegisters(string stringToConvert)
         {
             byte[] array = System.Text.Encoding.ASCII.GetBytes(stringToConvert);
-            int[] returnarray = new int[stringToConvert.Length / 2 + stringToConvert.Length % 2];
+            ushort[] returnarray = new ushort[stringToConvert.Length / 2 + stringToConvert.Length % 2];
             for (int i = 0; i < returnarray.Length; i++)
             {
                 returnarray[i] = array[i * 2];
                 if (i*2 +1< array.Length)
                 {
-                    returnarray[i] = returnarray[i] | ((int)array[i * 2 + 1] << 8);
+                    returnarray[i] = (ushort)(returnarray[i] | (array[i * 2 + 1] << 8));
                 }
             }
             return returnarray;

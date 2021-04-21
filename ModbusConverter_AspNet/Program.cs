@@ -22,11 +22,11 @@ namespace ModbusConverter
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://*:5000");
                 })
                 .ConfigureServices(services =>
                 {
-                    services.AddHostedService<AnalogInputsUpdater>();
-                    services.AddHostedService<DigitalInputsUpdater>();
+                    services.AddHostedService<InputsUpdater>();
                 });
     }
 }

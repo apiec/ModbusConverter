@@ -1,10 +1,10 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-#FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+#FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim-arm32v7 AS base
 #WORKDIR /app
 #EXPOSE 80
 #
-#FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+#FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim-arm32v7 AS build
 #WORKDIR /src
 #COPY [".", "ModbusConverter/"]
 #RUN dotnet restore "ModbusConverter.csproj"
@@ -26,8 +26,10 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /source
 
 # copy csproj and restore as distinct layers
-COPY *.csproj .
-RUN dotnet restore -r linux-arm
+COPY ./ModbusConverter_AspNet/ModbusConverter.csproj ./ModbusConverter_AspNet/
+COPY ./EasyModbus/EasyModbus.csproj ./EasyModbus/
+RUN ls
+RUN dotnet restore ./ModbusConverter_AspNet/ModbusConverter.csproj -r linux-arm
 
 # copy and publish app and libraries
 COPY . .

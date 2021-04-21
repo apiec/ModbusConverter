@@ -10,29 +10,64 @@ using EasyModbus;
 using System.Device.I2c;
 using ModbusConverter.PeripheralDevices;
 using System.Device.Gpio;
+using Microsoft.Extensions.Configuration;
+using ModbusConverter.PeripheralDevices.Peripherals;
 
 namespace ModbusConverter
 {
+    public class TypeHaver
+    {
+        public string Type { get; set; }
+    }
+
+
     public class Startup
     {
+        public Startup(IWebHostEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("peripherals.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
+        }
+
+        public IConfiguration Configuration { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddHostedService<AnalogInputsUpdater>();
-            //services.AddHostedService<DigitalInputsUpdater>();
+            //services.AddSingleton<ModbusServer>();
+            //services.AddSingleton<ModbusServerWrapper>();
 
-            services.AddSingleton<ModbusServer>();
+            //services.AddSingleton<GpioController>();
 
-            services.AddSingleton<PeripheralsManager>()
-                .AddSingleton<IRegularPeripheralsManager>(x => x.GetRequiredService<PeripheralsManager>())
-                .AddSingleton<IOverridingPeripheralsManager>(x => x.GetRequiredService<PeripheralsManager>());
 
-            services.AddSingleton<Peripherals>();
-            services.AddSingleton<GpioController>();
-            services.AddSingleton<IAnalogInterface, AnalogInterface>();
-            services.AddSingleton<IModbusEventsHandler, ModbusEventsHandler>();
-            services.AddSingleton<RegistersToPeripheralsMap>();
+            var peripheralsSection = Configuration.GetSection("Peripherals");
+
+            var peripherals = new List<IPeripheral>();
+            foreach (var peripheralSection in peripheralsSection.GetChildren())
+            {
+                var typeString = peripheralSection.GetValue<string>("Type");
+                switch (typeString)
+                {
+                    case nameof(InputPin):
+                        break;
+                    case nameof(OutputPin):
+                        break;
+                    case nameof(AnalogInputChannel):
+                        break;
+                    case nameof(AnalogOutputChannel):
+                        break;
+                    case nameof(PwmPin):
+                        break;
+                }
+            }
+            
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +78,7 @@ namespace ModbusConverter
                 app.UseDeveloperExceptionPage();
             }
             app.UseRouting();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", async context =>
@@ -52,24 +87,6 @@ namespace ModbusConverter
                 });
             });
 
-            SubscribeModbusEventsHandler(app);
-            StartInputsUpdater(app);
         }
-
-        private void SubscribeModbusEventsHandler(IApplicationBuilder app)
-        {
-            var eventsHandler = app.ApplicationServices.GetRequiredService<IModbusEventsHandler>();
-            var modbusServer = app.ApplicationServices.GetRequiredService<ModbusServer>();
-
-            modbusServer.CoilsChanged += eventsHandler.CoilsChangedHandler;
-            modbusServer.HoldingRegistersChanged += eventsHandler.HoldingRegistersChangedHandler;
-        }
-
-        private void StartInputsUpdater(IApplicationBuilder app)
-        {
-            var inputsUpdater = app.ApplicationServices.GetRequiredService<IInputsUpdater>();
-            inputsUpdater.Start();
-        }
-
     }
 }

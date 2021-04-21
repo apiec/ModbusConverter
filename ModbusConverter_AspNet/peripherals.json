@@ -1,0 +1,10 @@
+{
+  "Peripherals": [
+    {
+      "Name": "",
+      "Type": "InputPin",
+      "DefaultRegisterAddress": 0,
+      "DefaultRegisterType": ""
+    }
+  ]
+}
