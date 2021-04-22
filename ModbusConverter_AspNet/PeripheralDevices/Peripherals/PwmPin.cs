@@ -4,10 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Device.Pwm;
 using EasyModbus;
+using System.Device.Gpio;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
-    public class PwmPin : OutputPeripheral<double>
+    public class PwmPin : OutputPeripheral<byte>
     {
         private readonly PwmChannel _pwmChannel;
 
@@ -15,29 +16,28 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             : base(modbusServerProxy)
         {
             _pwmChannel = pwmChannel;
+            _pwmChannel.Frequency = 11000;
             _pwmChannel.DutyCycle = 0;
             _pwmChannel.Start();
         }
 
         protected override int DataLengthInBools => throw new NotSupportedException();
 
-        protected override int DataLengthInRegisters => (int)Math.Ceiling((double)sizeof(double) / sizeof(ushort));
+        protected override int DataLengthInRegisters => (int)Math.Ceiling((double)sizeof(byte) / sizeof(ushort));
 
-        protected override double ReadValueFromBools(bool[] bools)
+        protected override byte ReadValueFromBools(bool[] bools)
         {
             throw new NotSupportedException();
         }
 
-        protected override double ReadValueFromRegisters(ushort[] registers)
+        protected override byte ReadValueFromRegisters(ushort[] registers)
         {
-            return ModbusClient.ConvertRegistersToDouble(registers);
+            return (byte)registers[0];
         }
 
-
-        protected override void WriteValueToOutput(double value)
+        protected override void WriteValueToOutput(byte value)
         {
-            CheckIfValueInBounds(value);
-            _pwmChannel.DutyCycle = value;
+            _pwmChannel.DutyCycle = (double)value / byte.MaxValue;
         }
 
         private void CheckIfValueInBounds(double value)

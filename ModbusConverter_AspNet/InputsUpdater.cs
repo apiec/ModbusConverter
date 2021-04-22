@@ -31,16 +31,7 @@ namespace ModbusConverter
         private async Task UpdateInputPeripherals()
         {
             var tasks = _peripheralsManager.InputPeripherals
-                .Where(peripheral => peripheral is not (AnalogInputChannel or AnalogOutputChannel))
                 .Select(peripheral => Task.Factory.StartNew(() => peripheral.ReadAndSaveDataToRegister()));
-
-            var sequentials = _peripheralsManager.InputPeripherals
-                .Where(peripheral => peripheral is AnalogInputChannel or AnalogOutputChannel);
-
-            foreach (var peripheral in sequentials)
-            {
-                peripheral.ReadAndSaveDataToRegister();
-            }
 
             await Task.WhenAll(tasks);
         }

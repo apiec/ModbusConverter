@@ -96,8 +96,6 @@ namespace ModbusConverter
 
                 _modbusServer.coils[currentCoil] = valueToWrite;
             }
-
-            CoilsChanged(address, registers.Length);
         }
 
         public void WriteToDiscreteInputs(int address, bool[] registers)
@@ -135,10 +133,8 @@ namespace ModbusConverter
                     ? _holdingRegisterOverrides[currentRegister]
                     : registers[i];
 
-                _modbusServer.inputRegisters[currentRegister] = valueToWrite;
+                _modbusServer.holdingRegisters[currentRegister] = valueToWrite;
             }
-
-            HoldingRegistersChanged(address, registers.Length);
         }
         #endregion
 

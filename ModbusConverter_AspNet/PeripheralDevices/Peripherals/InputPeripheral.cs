@@ -15,8 +15,6 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
     {
         private readonly ModbusServerWrapper _modbusServerProxy;
         private readonly Dictionary<ModbusRegisterType, Action> _saveDataActions;
-        private ModbusRegisterType _registerType;
-        private int _registerAddress;
 
         public InputPeripheral(ModbusServerWrapper modbusServerProxy)
         {

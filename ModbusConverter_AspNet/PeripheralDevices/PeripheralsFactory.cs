@@ -25,7 +25,8 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             _modbusServerProxy = modbusServerProxy;
             _gpioController = gpioController;
             _analogIOController = analogIOController;
-            _pwmPins = configuration.GetValue<List<int>>("PWMPins");
+            _pwmPins = new List<int>();
+            configuration.GetSection("PWMPins").Bind(_pwmPins);
         }
 
         public AnalogInputChannel CreateAnalogInputChannel(int pcf8591Number, PCF8591Device.InputMode inputMode)
@@ -37,7 +38,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             return analogInputChannel;
         }
 
-        public AnalogOutputChannel CreateAnalogOutputChannel(int pcf8591Number, PCF8591Device.InputMode inputMode)
+        public AnalogOutputChannel CreateAnalogOutputChannel(int pcf8591Number)
         {
             var analogOutputChannel = new AnalogOutputChannel(_analogIOController, _modbusServerProxy);
             analogOutputChannel.Pcf8591Number = pcf8591Number;

@@ -7,7 +7,7 @@ namespace ModbusConverter
 {
     public class PeripheralConfig
     {
-
+        
     }
 
     public class InputPinConfig

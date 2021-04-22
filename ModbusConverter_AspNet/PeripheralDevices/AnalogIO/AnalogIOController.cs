@@ -31,8 +31,12 @@ namespace ModbusConverter.PeripheralDevices.AnalogIO
             CheckIfPCFNumberInBounds(pcf8591Number);
 
             var device = _pcf8591Devices[pcf8591Number];
-            var input = device.ReadInput(inputMode);
-
+            byte input = 0;
+            lock(device)
+            {
+                input = device.ReadInput(inputMode);
+            }
+            
             return input;
         }
 
@@ -41,7 +45,10 @@ namespace ModbusConverter.PeripheralDevices.AnalogIO
             CheckIfPCFNumberInBounds(pcf8591Number);
 
             var device = _pcf8591Devices[pcf8591Number];
-            device.WriteToOutput(value);
+            lock (device)
+            {
+                device.WriteToOutput(value);
+            }
         }
 
         private void CheckIfPCFNumberInBounds(int pcfNumber)
