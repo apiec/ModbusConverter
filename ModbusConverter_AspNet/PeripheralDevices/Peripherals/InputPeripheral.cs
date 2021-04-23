@@ -1,4 +1,5 @@
 ﻿using EasyModbus;
+using ModbusConverter.PeripheralDevices.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         private readonly ModbusServerWrapper _modbusServerProxy;
         private readonly Dictionary<ModbusRegisterType, Action> _saveDataActions;
 
-        public InputPeripheral(ModbusServerWrapper modbusServerProxy)
+        public InputPeripheral(IModbusServerWrapper modbusServerProxy)
         {
             _modbusServerProxy = modbusServerProxy;
             _saveDataActions = new Dictionary<ModbusRegisterType, Action>
@@ -31,6 +32,8 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         public ModbusRegisterType RegisterType { get; set; }
         public int RegisterAddress { get; set; }
         public string Name { get; set; }
+
+        public abstract PeripheralConfig GetConfig();
 
         public void ReadAndSaveDataToRegister()
         {

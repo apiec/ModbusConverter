@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Device.Gpio;
-
+using ModbusConverter.PeripheralDevices.Config;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -43,6 +43,11 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         protected override int DataLengthInBools => 1;
 
         protected override int DataLengthInRegisters => 1;
+
+        public override PeripheralConfig GetConfig()
+        {
+            return new OutputPinConfig(this);
+        }
 
         protected override bool ReadValueFromBools(bool[] bools)
         {

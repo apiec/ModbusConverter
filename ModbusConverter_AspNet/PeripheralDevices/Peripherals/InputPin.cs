@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Device.Gpio;
+using ModbusConverter.PeripheralDevices.Config;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -73,5 +74,9 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             }
         }
 
+        public override PeripheralConfig GetConfig()
+        {
+            return new InputPinConfig(this);
+        }
     }
 }

@@ -6,7 +6,7 @@ using EasyModbus;
 
 namespace ModbusConverter
 {
-    public class ModbusServerWrapper
+    public class ModbusServerWrapper : IModbusServerWrapper
     {
         private readonly ModbusServer _modbusServer;
         private readonly Dictionary<int, bool> _coilOverrides = new Dictionary<int, bool>();
@@ -211,9 +211,9 @@ namespace ModbusConverter
 
         public void OverrideCoils(IDictionary<int, bool> addressValuePairs)
         {
-            foreach(var (address, value) in addressValuePairs)
+            foreach (var (address, value) in addressValuePairs)
             {
-                _coilOverrides[address] = value; 
+                _coilOverrides[address] = value;
             }
             CallCoilsChanged(addressValuePairs.Keys);
         }
@@ -246,7 +246,7 @@ namespace ModbusConverter
 
         public void StopOverridingCoils(IEnumerable<int> addresses)
         {
-            foreach(var address in addresses)
+            foreach (var address in addresses)
             {
                 _coilOverrides.Remove(address);
             }

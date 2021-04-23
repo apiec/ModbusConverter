@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ModbusConverter.PeripheralDevices.AnalogIO;
+using ModbusConverter.PeripheralDevices.Config;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -16,11 +17,16 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             _analogIOController = analogIOController;
         }
 
-        public int Pcf8591Number { get; set; }
+        public int PCF8591Number { get; set; }
 
         protected override int DataLengthInBools => throw new NotSupportedException();
 
         protected override int DataLengthInRegisters => 1;
+
+        public override PeripheralConfig GetConfig()
+        {
+            return new AnalogOutputChannelConfig(this);
+        }
 
         protected override byte ReadValueFromBools(bool[] bools)
         {
@@ -40,7 +46,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         protected override void WriteValueToOutput(byte value)
         {
-            _analogIOController.WriteToOutput(Pcf8591Number, value);
+            _analogIOController.WriteToOutput(PCF8591Number, value);
         }
     }
 }

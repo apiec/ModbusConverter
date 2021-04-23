@@ -10,7 +10,7 @@ namespace ModbusConverter.PeripheralDevices.AnalogIO
     {
         private readonly List<PCF8591Device> _pcf8591Devices;
 
-        public AnalogIOController(PCF8591DeviceFactory pcf8591DeviceFactory, IConfiguration configuration)
+        public AnalogIOController(IPCF8591DeviceFactory pcf8591DeviceFactory, IConfiguration configuration)
         {
             _pcf8591Devices = new List<PCF8591Device>();
 

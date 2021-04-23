@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Device.Pwm;
 using EasyModbus;
 using System.Device.Gpio;
+using ModbusConverter.PeripheralDevices.Config;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -21,9 +22,16 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             _pwmChannel.Start();
         }
 
+        public int PinNumber { get; set; }
+
         protected override int DataLengthInBools => throw new NotSupportedException();
 
         protected override int DataLengthInRegisters => (int)Math.Ceiling((double)sizeof(byte) / sizeof(ushort));
+
+        public override PeripheralConfig GetConfig()
+        {
+            return new PwmPinConfig(this);
+        }
 
         protected override byte ReadValueFromBools(bool[] bools)
         {

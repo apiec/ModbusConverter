@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EasyModbus;
+using ModbusConverter.PeripheralDevices.Config;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -13,14 +14,14 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
     public abstract class OutputPeripheral<T> : IOutputPeripheral
     {
-        private readonly ModbusServerWrapper _modbusServerProxy;
+        private readonly ModbusServerWrapper _modbusServerWrapper;
         private readonly Dictionary<ModbusRegisterType, Func<T>> _readValueFuncs;
 
-        public OutputPeripheral(ModbusServerWrapper modbusServerProxy)
+        public OutputPeripheral(IModbusServerWrapper modbusServerWrapper)
         {
-            _modbusServerProxy = modbusServerProxy;
-            _modbusServerProxy.CoilsChanged += OnCoilsChanged;
-            _modbusServerProxy.HoldingRegistersChanged += OnHoldingRegistersChanged;
+            _modbusServerWrapper = modbusServerWrapper;
+            _modbusServerWrapper.CoilsChanged += OnCoilsChanged;
+            _modbusServerWrapper.HoldingRegistersChanged += OnHoldingRegistersChanged;
 
             _readValueFuncs = new Dictionary<ModbusRegisterType, Func<T>>
             {
@@ -34,6 +35,8 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         public ModbusRegisterType RegisterType { get; set; }
         public int RegisterAddress { get; set; }
         public string Name { get; set; }
+        
+        public abstract PeripheralConfig GetConfig();
 
         #region EventHandling
         private void OnCoilsChanged(int coil, int numberOfCoils)
@@ -70,7 +73,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         private T ReadValueFromCoils()
         {
-            var bools = _modbusServerProxy.ReadCoils(RegisterAddress, DataLengthInBools);
+            var bools = _modbusServerWrapper.ReadCoils(RegisterAddress, DataLengthInBools);
             var value = ReadValueFromBools(bools);
 
             return value;
@@ -78,7 +81,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         private T ReadValueFromDiscreteInputs()
         {
-            var bools = _modbusServerProxy.ReadDiscreteInputs(RegisterAddress, DataLengthInBools);
+            var bools = _modbusServerWrapper.ReadDiscreteInputs(RegisterAddress, DataLengthInBools);
             var value = ReadValueFromBools(bools);
 
             return value;
@@ -86,7 +89,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         private T ReadValueFromInputRegisters()
         {
-            var registers = _modbusServerProxy.ReadInputRegisters(RegisterAddress, DataLengthInRegisters);
+            var registers = _modbusServerWrapper.ReadInputRegisters(RegisterAddress, DataLengthInRegisters);
             var value = ReadValueFromRegisters(registers);
 
             return value;
@@ -94,7 +97,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         private T ReadValueFromHoldingRegisters()
         {
-            var registers = _modbusServerProxy.ReadHoldingRegisters(RegisterAddress, DataLengthInRegisters);
+            var registers = _modbusServerWrapper.ReadHoldingRegisters(RegisterAddress, DataLengthInRegisters);
             var value = ReadValueFromRegisters(registers);
  
             return value;

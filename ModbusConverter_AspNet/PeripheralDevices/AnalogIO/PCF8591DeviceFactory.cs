@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ModbusConverter.PeripheralDevices.AnalogIO
 {
-    public class PCF8591DeviceFactory
+    public class PCF8591DeviceFactory : IPCF8591DeviceFactory
     {
         private readonly I2cBus _i2cBus;
 
@@ -25,7 +25,7 @@ namespace ModbusConverter.PeripheralDevices.AnalogIO
 
             var i2cAddress = 0b1001000 | address;
             var i2cDevice = _i2cBus.CreateDevice(i2cAddress);
-            
+
             var pcfDevice = new PCF8591Device(i2cDevice);
 
             return pcfDevice;

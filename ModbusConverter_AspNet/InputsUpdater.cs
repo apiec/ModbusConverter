@@ -24,7 +24,6 @@ namespace ModbusConverter
             while (!stoppingToken.IsCancellationRequested)
             {
                 await UpdateInputPeripherals();
-                await Task.Delay(1);
             }
         }
 

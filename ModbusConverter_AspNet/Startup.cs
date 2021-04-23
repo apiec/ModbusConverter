@@ -13,6 +13,7 @@ using System.Device.Gpio;
 using Microsoft.Extensions.Configuration;
 using ModbusConverter.PeripheralDevices.Peripherals;
 using ModbusConverter.PeripheralDevices.AnalogIO;
+using ModbusConverter.PeripheralDevices.Config;
 using static ModbusConverter.PeripheralDevices.AnalogIO.PCF8591Device;
 using System.Text.Json;
 
@@ -43,35 +44,15 @@ namespace ModbusConverter
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ModbusServer>();
-            services.AddSingleton<ModbusServerWrapper>();
-            services.AddSingleton<PeripheralsManager>();
-            services.AddSingleton<PeripheralsFactory>();
-            services.AddSingleton<PCF8591DeviceFactory>();
             services.AddSingleton<GpioController>();
+            services.AddSingleton<ModbusServer>();
+
+            services.AddSingleton<IModbusServerWrapper, ModbusServerWrapper>();
+            services.AddSingleton<IPeripheralsManager, PeripheralsManager>();
+            services.AddSingleton<IPeripheralsFactory, PeripheralsFactory>();
+            services.AddSingleton<IPeripheralsConfigFile, PeripheralsConfigFile>();
+            services.AddSingleton<IPCF8591DeviceFactory, PCF8591DeviceFactory>();
             services.AddSingleton<IAnalogIOController, AnalogIOController>();
-
-            var peripheralsSection = Configuration.GetSection("Peripherals");
-
-            var peripherals = new List<IPeripheral>();
-            foreach (var peripheralSection in peripheralsSection.GetChildren())
-            {
-                var typeString = peripheralSection.GetValue<string>("Type");
-                switch (typeString)
-                {
-                    case nameof(InputPin):
-                        break;
-                    case nameof(OutputPin):
-                        break;
-                    case nameof(AnalogInputChannel):
-                        break;
-                    case nameof(AnalogOutputChannel):
-                        break;
-                    case nameof(PwmPin):
-                        break;
-                }
-            }
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,30 +64,13 @@ namespace ModbusConverter
             }
             app.UseRouting();
 
-            var manager = app.ApplicationServices.GetRequiredService<PeripheralsManager>();
+            var manager = app.ApplicationServices.GetRequiredService<IPeripheralsManager>();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    var jsons = manager.Peripherals.Select(p =>
-                    {
-                        switch (p)
-                        {
-                            case AnalogInputChannel a:
-                                return JsonSerializer.Serialize(a);
-                            case AnalogOutputChannel a:
-                                return JsonSerializer.Serialize(a);
-                            case InputPin a:
-                                return JsonSerializer.Serialize(a);
-                            case OutputPin a:
-                                return JsonSerializer.Serialize(a);
-                            case PwmPin a:
-                                return JsonSerializer.Serialize(a);
-                        }
-
-                        return JsonSerializer.Serialize(p);
-                    });
+                    var jsons = manager.Peripherals.Select(p => JsonSerializer.Serialize(p));
 
                     await context.Response.WriteAsync(string.Join("\n", jsons));
                 });
@@ -115,7 +79,7 @@ namespace ModbusConverter
             var server = app.ApplicationServices.GetRequiredService<ModbusServer>();
             server.Listen();
 
-            var factory = app.ApplicationServices.GetRequiredService<PeripheralsFactory>();
+            var factory = app.ApplicationServices.GetRequiredService<IPeripheralsFactory>();
 
             var peripherals = new List<IPeripheral>();
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ModbusConverter.PeripheralDevices.AnalogIO;
 using EasyModbus;
+using ModbusConverter.PeripheralDevices.Config;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -21,6 +22,11 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public int PCF8591Number { get; set; }
         public PCF8591Device.InputMode InputMode { get; set; }
+
+        public override PeripheralConfig GetConfig()
+        {
+            return new AnalogInputChannelConfig(this);
+        }
 
         protected override bool[] ReadDataAsBools()
         {
