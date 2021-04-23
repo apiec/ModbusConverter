@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ModbusConverter.PeripheralDevices;
-using EasyModbus;
 using System.Threading;
 using Microsoft.Extensions.Hosting;
-using ModbusConverter.PeripheralDevices.Peripherals;
 
-namespace ModbusConverter
+namespace ModbusConverter.PeripheralDevices
 {
     public class InputsUpdater : BackgroundService
     {
