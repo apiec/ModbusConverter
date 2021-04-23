@@ -14,13 +14,16 @@ namespace ModbusConverter.PeripheralDevices
         private readonly ConcurrentDictionary<(ModbusRegisterType, int), IPeripheral> _addressToPeripheralMap;
         private readonly IPeripheralsConfigFile _peripheralsConfigFile;
 
-        public PeripheralsManager(IPeripheralsConfigFile peripheralsConfigFile)
+        public PeripheralsManager(IPeripheralsConfigFile peripheralsConfigFile, IModbusServerWrapper modbusServerWrapper)
         {
             _addressToPeripheralMap = new ConcurrentDictionary<(ModbusRegisterType, int), IPeripheral>();
             _peripheralsConfigFile = peripheralsConfigFile;
             _peripherals = peripheralsConfigFile
                 .ReadConfigFile()
                 .ToHashSet();
+
+            modbusServerWrapper.CoilsChanged += OnCoilsChanged;
+            modbusServerWrapper.HoldingRegistersChanged += OnHoldingRegistersChanged;
         }
 
         public IEnumerable<IPeripheral> Peripherals => _peripherals.AsEnumerable();
@@ -61,10 +64,36 @@ namespace ModbusConverter.PeripheralDevices
 
         public void ReloadConfigFile()
         {
-            _peripherals.RemoveWhere(_ => true);
             _peripherals = _peripheralsConfigFile
                 .ReadConfigFile()
                 .ToHashSet();
+        }
+
+        private void OnCoilsChanged(int coil, int numberOfCoils)
+        {
+            var tasks = OutputPeripherals
+                .Where(peripheral => peripheral.RegisterType == ModbusRegisterType.Coil)
+                .Where(peripheral => RangesOverlap(coil, numberOfCoils, 
+                                                   peripheral.RegisterAddress, peripheral.DataLengthInBools))
+                .Select(peripheral => Task.Factory.StartNew(peripheral.ReadRegisterAndWriteToOutput));
+
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        private void OnHoldingRegistersChanged(int register, int numberOfRegisters)
+        {
+            var tasks = OutputPeripherals
+                .Where(peripheral => peripheral.RegisterType == ModbusRegisterType.HoldingRegister)
+                .Where(peripheral => RangesOverlap(register, numberOfRegisters,
+                                                   peripheral.RegisterAddress, peripheral.DataLengthInRegisters))
+                .Select(peripheral => Task.Factory.StartNew(peripheral.ReadRegisterAndWriteToOutput));
+
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        private bool RangesOverlap(int startA, int lenA, int startB, int lenB)
+        {
+            return startA <= startB + lenB && startB <= startA + lenA;
         }
     }
 }

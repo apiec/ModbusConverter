@@ -9,6 +9,9 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 {
     public interface IOutputPeripheral : IPeripheral
     {
+        int DataLengthInBools { get; }
+        int DataLengthInRegisters { get; }
+
         void ReadRegisterAndWriteToOutput();
     }
 
@@ -20,8 +23,6 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         public OutputPeripheral(IModbusServerWrapper modbusServerWrapper)
         {
             _modbusServerWrapper = modbusServerWrapper;
-            _modbusServerWrapper.CoilsChanged += OnCoilsChanged;
-            _modbusServerWrapper.HoldingRegistersChanged += OnHoldingRegistersChanged;
 
             _readValueFuncs = new Dictionary<ModbusRegisterType, Func<T>>
             {
@@ -38,30 +39,6 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         
         public abstract PeripheralConfig GetConfig();
 
-        #region EventHandling
-        private void OnCoilsChanged(int coil, int numberOfCoils)
-        {
-            if (RegisterType == ModbusRegisterType.Coil &&
-                RangesOverlap(coil, numberOfCoils, RegisterAddress, DataLengthInRegisters))
-            {
-                ReadRegisterAndWriteToOutput();
-            }
-        }
-
-        private void OnHoldingRegistersChanged(int register, int numberOfRegisters)
-        {
-            if (RegisterType == ModbusRegisterType.HoldingRegister &&
-                RangesOverlap(register, numberOfRegisters, RegisterAddress, DataLengthInRegisters))
-            {
-                ReadRegisterAndWriteToOutput();
-            }
-        }
-
-        private bool RangesOverlap(int startA, int lenA, int startB, int lenB)
-        {
-            return startA <= startB + lenB && startB <= startA + lenA;
-        }
-        #endregion
 
         public void ReadRegisterAndWriteToOutput()
         {
@@ -103,8 +80,8 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             return value;
          }
 
-        protected abstract int DataLengthInBools { get; }
-        protected abstract int DataLengthInRegisters { get; }
+        public abstract int DataLengthInBools { get; }
+        public abstract int DataLengthInRegisters { get; }
 
         protected abstract T ReadValueFromBools(bool[] bools);
         protected abstract T ReadValueFromRegisters(ushort[] registers);
