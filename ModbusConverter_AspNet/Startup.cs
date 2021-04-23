@@ -53,6 +53,7 @@ namespace ModbusConverter
             services.AddSingleton<IPeripheralsConfigFile, PeripheralsConfigFile>();
             services.AddSingleton<IPCF8591DeviceFactory, PCF8591DeviceFactory>();
             services.AddSingleton<IAnalogIOController, AnalogIOController>();
+            services.AddSingleton<IOutputsUpdater, OutputsUpdater>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,11 +77,31 @@ namespace ModbusConverter
                 });
             });
 
+            SubscribeOutputsUpdater(app);
+            ModbusServerStartListening(app);
+
+ 
+
+        }
+
+        private void SubscribeOutputsUpdater(IApplicationBuilder app)
+        {
+            var outputsUpdater = app.ApplicationServices.GetRequiredService<IOutputsUpdater>();
+            var serverWrapper = app.ApplicationServices.GetRequiredService<IModbusServerWrapper>();
+            serverWrapper.CoilsChanged += outputsUpdater.OnCoilsChanged;
+            serverWrapper.HoldingRegistersChanged += outputsUpdater.OnHoldingRegistersChanged;
+        }
+
+        private void ModbusServerStartListening(IApplicationBuilder app)
+        {
             var server = app.ApplicationServices.GetRequiredService<ModbusServer>();
+
             server.Listen();
+        }
 
+        private void StartSomeMockPeripherals(IApplicationBuilder app)
+        {
             var factory = app.ApplicationServices.GetRequiredService<IPeripheralsFactory>();
-
             var peripherals = new List<IPeripheral>();
 
             var pinsList = new List<int>();
@@ -102,7 +123,7 @@ namespace ModbusConverter
             var pwmPins = new List<int>();
             Configuration.GetSection("PWMPins").Bind(pwmPins);
             var gpioController = app.ApplicationServices.GetRequiredService<GpioController>();
-            
+
             for (int i = 0; i < pwmPins.Count; ++i)
             {
                 var pwmPin = pwmPins[i];
@@ -134,11 +155,8 @@ namespace ModbusConverter
                 peripherals.AddRange(new IPeripheral[] { analogInput0_1, analogInput2_3, analogInput0, analogOutput });
             }
 
-            foreach (var peripheral in peripherals)
-            {
-                manager.AddPeripheral(peripheral);
-            }
-
+            var manager = app.ApplicationServices.GetRequiredService<IPeripheralsManager>();
+            manager.AddPeripheralRange(peripherals);
         }
     }
 }
