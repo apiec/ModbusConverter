@@ -14,7 +14,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
     public abstract class InputPeripheral : IInputPeripheral
     {
-        private readonly ModbusServerWrapper _modbusServerProxy;
+        private readonly IModbusServerWrapper _modbusServerProxy;
         private readonly Dictionary<ModbusRegisterType, Action> _saveDataActions;
 
         public InputPeripheral(IModbusServerWrapper modbusServerProxy)

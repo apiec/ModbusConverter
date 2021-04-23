@@ -11,7 +11,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
     {
         private readonly IAnalogIOController _analogIOController;
 
-        public AnalogOutputChannel(IAnalogIOController analogIOController, ModbusServerWrapper modbusServerProxy)
+        public AnalogOutputChannel(IAnalogIOController analogIOController, IModbusServerWrapper modbusServerProxy)
             : base(modbusServerProxy)
         {
             _analogIOController = analogIOController;

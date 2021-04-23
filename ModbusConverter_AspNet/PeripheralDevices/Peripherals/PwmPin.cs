@@ -13,7 +13,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
     {
         private readonly PwmChannel _pwmChannel;
 
-        public PwmPin(PwmChannel pwmChannel, ModbusServerWrapper modbusServerProxy)
+        public PwmPin(PwmChannel pwmChannel, IModbusServerWrapper modbusServerProxy)
             : base(modbusServerProxy)
         {
             _pwmChannel = pwmChannel;

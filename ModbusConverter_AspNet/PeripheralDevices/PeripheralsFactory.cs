@@ -12,7 +12,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 {
     public class PeripheralsFactory : IPeripheralsFactory
     {
-        private readonly ModbusServerWrapper _modbusServerProxy;
+        private readonly IModbusServerWrapper _modbusServerProxy;
         private readonly GpioController _gpioController;
         private readonly IAnalogIOController _analogIOController;
         private readonly List<int> _pwmPins;

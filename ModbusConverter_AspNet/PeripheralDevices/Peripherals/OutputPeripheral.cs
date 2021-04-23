@@ -14,7 +14,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
     public abstract class OutputPeripheral<T> : IOutputPeripheral
     {
-        private readonly ModbusServerWrapper _modbusServerWrapper;
+        private readonly IModbusServerWrapper _modbusServerWrapper;
         private readonly Dictionary<ModbusRegisterType, Func<T>> _readValueFuncs;
 
         public OutputPeripheral(IModbusServerWrapper modbusServerWrapper)
