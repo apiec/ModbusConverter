@@ -11,12 +11,10 @@ namespace ModbusConverter.PeripheralDevices
     public class PeripheralsManager : IPeripheralsManager
     {
         private HashSet<IPeripheral> _peripherals;
-        private readonly ConcurrentDictionary<(ModbusRegisterType, int), IPeripheral> _addressToPeripheralMap;
         private readonly IPeripheralsConfigFile _peripheralsConfigFile;
 
         public PeripheralsManager(IPeripheralsConfigFile peripheralsConfigFile, IModbusServerWrapper modbusServerWrapper)
         {
-            _addressToPeripheralMap = new ConcurrentDictionary<(ModbusRegisterType, int), IPeripheral>();
             _peripheralsConfigFile = peripheralsConfigFile;
             _peripherals = peripheralsConfigFile
                 .ReadConfigFile()
