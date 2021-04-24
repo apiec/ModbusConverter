@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{E238CBC7-B06C-428D-A818-652260CE898D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,12 +31,6 @@ Global
 		{65777C4E-D10F-4D4D-87C6-ED02E8B8F648}.DebugCommercial|Any CPU.Build.0 = Debug|Any CPU
 		{65777C4E-D10F-4D4D-87C6-ED02E8B8F648}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65777C4E-D10F-4D4D-87C6-ED02E8B8F648}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E238CBC7-B06C-428D-A818-652260CE898D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E238CBC7-B06C-428D-A818-652260CE898D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E238CBC7-B06C-428D-A818-652260CE898D}.DebugCommercial|Any CPU.ActiveCfg = Debug|Any CPU
-		{E238CBC7-B06C-428D-A818-652260CE898D}.DebugCommercial|Any CPU.Build.0 = Debug|Any CPU
-		{E238CBC7-B06C-428D-A818-652260CE898D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E238CBC7-B06C-428D-A818-652260CE898D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
