@@ -1,0 +1,106 @@
+﻿@page
+@model ModbusConverter.Pages.OverridesModel
+
+<div style="margin-top:30px;">
+
+    <table class="table-bordered">
+        <thead>
+            <tr>
+                <th colspan="2">Coils</th>
+                <th colspan="2">Discrete Inputs</th>
+                <th colspan="2">Input registers</th>
+                <th colspan="2">Holding registers</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="2">
+                    <form method="post">
+                        <input hidden asp-for="RegisterType" value="Coil" />
+                        <div>
+                            <label asp-for="Address"></label>
+                            <input asp-for="Address" />
+                        </div>
+                        <div>
+                            <label asp-for="Value"></label>
+                            <input type="checkbox" asp-for="BoolValue" />
+                        </div>
+                        <div>
+                            <button asp-page-handler="Add">Add</button>
+                            <button asp-page-handler="Remove">Remove</button>
+                        </div>
+                    </form>
+                </td>
+                <td colspan="2">
+                    <form method="post">
+                        <input hidden asp-for="RegisterType" value="DiscreteInput" />
+                        <div>
+                            <label asp-for="Address"></label>
+                            <input asp-for="Address" />
+                        </div>
+                        <div>
+                            <label asp-for="Value"></label>
+                            <input type="checkbox" asp-for="BoolValue" />
+                        </div>
+                        <div>
+                            <button asp-page-handler="Add">Add</button>
+                            <button asp-page-handler="Remove">Remove</button>
+                        </div>
+                    </form>
+                </td>
+                <td colspan="2">
+                    <form method="post">
+                        <input hidden asp-for="RegisterType" value="InputRegister" />
+                        <div>
+                            <label asp-for="Address"></label>
+                            <input asp-for="Address" />
+                        </div>
+                        <div>
+                            <label asp-for="Value"></label>
+                            <input asp-for="Value" />
+                        </div>
+                        <div>
+                            <button asp-page-handler="Add">Add</button>
+                            <button asp-page-handler="Remove">Remove</button>
+                        </div>
+                    </form>
+                </td>
+                <td colspan="2">
+                    <form method="post">
+                        <input hidden asp-for="RegisterType" value="HoldingRegister" />
+                        <div>
+                            <label asp-for="Address"></label>
+                            <input asp-for="Address" />
+                        </div>
+                        <div>
+                            <label asp-for="RegisterType"></label>
+                            <input asp-for="Value" />
+                        </div>
+                        <div>
+                            <button asp-page-handler="Add">Add</button>
+                        </div>
+                        <div>
+                            <button asp-page-handler="Remove">Remove</button>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                @for (int i = 0; i < 4; ++i)
+                {
+                    <td>Address</td>
+                    <td>Value</td>
+                }
+            </tr>
+            @foreach (var row in Model.Rows)
+            {
+                <tr>
+                    @foreach (var column in row)
+                    {
+                        <td>@column</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using ModbusConverter.PeripheralDevices;
 
 namespace ModbusConverter
 {
@@ -21,6 +23,11 @@ namespace ModbusConverter
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://*:80");
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddHostedService<InputsUpdater>();
                 });
     }
 }

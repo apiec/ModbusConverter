@@ -1,0 +1,118 @@
+[
+  {
+    "PinNumber": 17,
+    "Type": "InputPin",
+    "RegisterType": "Coil",
+    "RegisterAddress": 17,
+    "Name": "Input Pin 17"
+  },
+  {
+    "PinNumber": 27,
+    "Type": "InputPin",
+    "RegisterType": "Coil",
+    "RegisterAddress": 27,
+    "Name": "Input Pin 27"
+  },
+  {
+    "PinNumber": 22,
+    "Type": "InputPin",
+    "RegisterType": "Coil",
+    "RegisterAddress": 22,
+    "Name": "Input Pin 22"
+  },
+  {
+    "PinNumber": 23,
+    "Type": "InputPin",
+    "RegisterType": "Coil",
+    "RegisterAddress": 23,
+    "Name": "Input Pin 23"
+  },
+  {
+    "PinNumber": 25,
+    "Type": "OutputPin",
+    "RegisterType": "Coil",
+    "RegisterAddress": 25,
+    "Name": "Output Pin 25"
+  },
+  {
+    "PinNumber": 5,
+    "Type": "OutputPin",
+    "RegisterType": "Coil",
+    "RegisterAddress": 5,
+    "Name": "Output Pin 5"
+  },
+  {
+    "PinNumber": 6,
+    "Type": "OutputPin",
+    "RegisterType": "Coil",
+    "RegisterAddress": 6,
+    "Name": "Output Pin 6"
+  },
+  {
+    "PinNumber": 16,
+    "Type": "OutputPin",
+    "RegisterType": "Coil",
+    "RegisterAddress": 16,
+    "Name": "Output Pin 26"
+  },
+  {
+    "PinNumber": 12,
+    "Type": "PwmPin",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 20,
+    "Name": "PWM Pin 12"
+  },
+  {
+    "PinNumber": 13,
+    "Type": "PwmPin",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 24,
+    "Name": "PWM Pin 13"
+  },
+  {
+    "PCF8591Number": 0,
+    "InputMode": "Differential_AIN0_AIN1",
+    "Type": "AnalogInputChannel",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 1,
+    "Name": "ADC-0-0_1"
+  },
+  {
+    "PCF8591Number": 0,
+    "InputMode": "Differential_AIN2_AIN3",
+    "Type": "AnalogInputChannel",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 2,
+    "Name": "ADC-0-2_3"
+  },
+  {
+    "PCF8591Number": 0,
+    "Type": "AnalogOutputChannel",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 3,
+    "Name": "DAC-0"
+  },
+  {
+    "PCF8591Number": 1,
+    "InputMode": "Differential_AIN0_AIN1",
+    "Type": "AnalogInputChannel",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 4,
+    "Name": "ADC-1-0_1"
+  },
+  {
+    "PCF8591Number": 1,
+    "InputMode": "Differential_AIN2_AIN3",
+    "Type": "AnalogInputChannel",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 5,
+    "Name": "ADC-1-0_1"
+  },
+  {
+    "PCF8591Number": 1,
+    "Type": "AnalogOutputChannel",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 6,
+    "Name": "DAC-1"
+  }
+]

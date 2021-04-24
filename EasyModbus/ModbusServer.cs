@@ -1441,7 +1441,7 @@ namespace EasyModbus
             if (sendData.exceptionCode == 0)
             {
                 lock (lockHoldingRegisters)
-                    holdingRegisters[receiveData.startingAdress + 1] = unchecked((short)receiveData.receiveRegisterValues[0]);
+                    holdingRegisters[receiveData.startingAdress + 1] = unchecked(receiveData.receiveRegisterValues[0]);
             }
                 if (sendData.exceptionCode > 0)
                     sendData.length = 0x03;
@@ -1706,7 +1706,7 @@ namespace EasyModbus
                 lock (lockHoldingRegisters)
                     for (int i = 0; i < receiveData.quantity; i++)
                     {
-                        holdingRegisters[receiveData.startingAdress + i + 1] = unchecked((short)receiveData.receiveRegisterValues[i]);
+                        holdingRegisters[receiveData.startingAdress + i + 1] = unchecked(receiveData.receiveRegisterValues[i]);
                     }
             }
             if (sendData.exceptionCode > 0)
@@ -1833,7 +1833,7 @@ namespace EasyModbus
                 lock (holdingRegisters)
                     for (int i = 0; i < receiveData.quantityWrite; i++)
                     {
-                        holdingRegisters[receiveData.startingAddressWrite + i + 1] = unchecked((short)receiveData.receiveRegisterValues[i]);
+                        holdingRegisters[receiveData.startingAddressWrite + i + 1] = unchecked(receiveData.receiveRegisterValues[i]);
                     }
                 sendData.byteCount = (byte)(2 * receiveData.quantityRead);
             }
@@ -2178,7 +2178,7 @@ namespace EasyModbus
 
     public class HoldingRegisters
     {
-        public Int16[] localArray = new Int16[65535];
+        public ushort[] localArray = new ushort[65535];
         ModbusServer modbusServer;
      
         public HoldingRegisters(EasyModbus.ModbusServer modbusServer)
@@ -2186,7 +2186,7 @@ namespace EasyModbus
             this.modbusServer = modbusServer;
         }
 
-        public Int16 this[int x]
+        public ushort this[int x]
         {
             get { return this.localArray[x]; }
             set
@@ -2199,7 +2199,7 @@ namespace EasyModbus
 
     public class InputRegisters
     {
-        public Int16[] localArray = new Int16[65535];
+        public ushort[] localArray = new ushort[65535];
         ModbusServer modbusServer;
 
         public InputRegisters(EasyModbus.ModbusServer modbusServer)
@@ -2207,7 +2207,7 @@ namespace EasyModbus
             this.modbusServer = modbusServer;
         }
 
-        public Int16 this[int x]
+        public ushort this[int x]
         {
             get { return this.localArray[x]; }
             set

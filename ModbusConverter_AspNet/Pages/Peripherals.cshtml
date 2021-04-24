@@ -1,0 +1,67 @@
+﻿@page
+@model ModbusConverter.Pages.PeripheralsModel
+@using ModbusConverter.PeripheralDevices.Config;
+
+<div>
+    <table class="table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Peripheral Type</th>
+                <th>Register Type</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        @foreach (var peripheral in Model.PeripheralConfigs)
+        {
+            <tr>
+                <td>@peripheral.Name</td>
+                <td>@peripheral.Type</td>
+                <td>@peripheral.RegisterType</td>
+                <td>@peripheral.RegisterAddress</td>
+                @if (peripheral is AnalogInputChannelConfig)
+                {
+                    <td>
+                        <div><b>PCF8591Number</b></div>
+                        <div>@((peripheral as AnalogInputChannelConfig).PCF8591Number)</div>
+                    </td>
+                    <td>
+                        <div><b>InputMode</b></div>
+                        <div>@((peripheral as AnalogInputChannelConfig).InputMode.ToString())</div>
+                    </td>
+                }
+                @if (peripheral is AnalogOutputChannelConfig)
+                {
+                    <td>
+                        <div><b>PCF8591Number</b></div>
+                        <div>@((peripheral as AnalogOutputChannelConfig).PCF8591Number)</div>
+                    </td>
+                }
+                else
+                if (peripheral is InputPinConfig)
+                {
+                    <td>
+                        <div><b>Pin</b></div>
+                        <div>@((peripheral as InputPinConfig).PinNumber)</div>
+                    </td>
+                }
+                else
+                if (peripheral is OutputPinConfig)
+                {
+                    <td>
+                        <div><b>Pin</b></div>
+                        <div>@((peripheral as OutputPinConfig).PinNumber)</div>
+                    </td>
+                }
+                else
+                if (peripheral is PwmPinConfig)
+                {
+                    <td>
+                        <div><b>Pin</b></div>
+                        <div>@((peripheral as PwmPinConfig).PinNumber)</div>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>
