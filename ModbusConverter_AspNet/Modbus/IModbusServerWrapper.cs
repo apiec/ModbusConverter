@@ -8,6 +8,10 @@ namespace ModbusConverter
         event ModbusServer.CoilsChangedHandler CoilsChanged;
         event ModbusServer.HoldingRegistersChangedHandler HoldingRegistersChanged;
 
+        IEnumerable<KeyValuePair<int, bool>> GetCoilOverrides();
+        IEnumerable<KeyValuePair<int, bool>> GetDiscreteInputOverrides();
+        IEnumerable<KeyValuePair<int, ushort>> GetHoldingRegisterOverrides();
+        IEnumerable<KeyValuePair<int, ushort>> GetInputRegisterOverrides();
         void OverrideCoils(IDictionary<int, bool> addressValuePairs);
         void OverrideDiscreteInputs(IDictionary<int, bool> addressValuePairs);
         void OverrideHoldingRegisters(IDictionary<int, ushort> addressValuePairs);

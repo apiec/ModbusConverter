@@ -9,9 +9,9 @@ namespace ModbusConverter.PeripheralDevices
 {
     public class InputsUpdater : BackgroundService
     {
-        private readonly PeripheralsManager _peripheralsManager;
+        private readonly IPeripheralsManager _peripheralsManager;
 
-        public InputsUpdater(PeripheralsManager peripheralsManager)
+        public InputsUpdater(IPeripheralsManager peripheralsManager)
         {
             _peripheralsManager = peripheralsManager;
         }

@@ -19,9 +19,9 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public int PCF8591Number { get; set; }
 
-        protected override int DataLengthInBools => throw new NotSupportedException();
+        public override int DataLengthInBools => throw new NotSupportedException();
 
-        protected override int DataLengthInRegisters => 1;
+        public override int DataLengthInRegisters => 1;
 
         public override PeripheralConfig GetConfig()
         {

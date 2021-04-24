@@ -63,7 +63,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
                 }
 
                 peripheral.Name = peripheralConfig.Name;
-                peripheral.RegisterAddress = peripheral.RegisterAddress;
+                peripheral.RegisterAddress = peripheralConfig.RegisterAddress;
             
                 var registerType = Enum.Parse(typeof(ModbusRegisterType), peripheralConfig.RegisterType);
                 peripheral.RegisterType = (ModbusRegisterType)registerType;

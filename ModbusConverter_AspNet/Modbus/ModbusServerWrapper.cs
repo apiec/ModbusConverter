@@ -35,53 +35,6 @@ namespace ModbusConverter
             HoldingRegistersChanged(register, numberOfRegisters);
         }
 
-        #region Utils
-        private void CallCoilsChanged(IEnumerable<int> addresses)
-        {
-            var aggregated = AggregateAddresses(addresses);
-            foreach (var (address, length) in aggregated)
-            {
-                CoilsChanged(address, length);
-            }
-        }
-
-        private void CallHoldingRegistersChanged(IEnumerable<int> addresses)
-        {
-            var aggregated = AggregateAddresses(addresses);
-            foreach (var (address, length) in aggregated)
-            {
-                HoldingRegistersChanged(address, length);
-            }
-        }
-
-        private Dictionary<int, int> AggregateAddresses(IEnumerable<int> addresses)
-        {
-            if (addresses.Count() == 0)
-                return default;
-
-            var sorted = addresses.OrderBy(i => i).ToArray();
-
-            var addressesToLengths = new Dictionary<int, int>();
-
-            int startOfCurrentSequence = sorted[0];
-            addressesToLengths[startOfCurrentSequence] = 1;
-            for (int i = 1; i < sorted.Length; ++i)
-            {
-                var subsequentAddressesDiff = sorted[i] - sorted[i - 1];
-                if (subsequentAddressesDiff > 1)
-                {
-                    startOfCurrentSequence = sorted[i];
-                    addressesToLengths[startOfCurrentSequence] = 1;
-                }
-                else
-                {
-                    addressesToLengths[startOfCurrentSequence] += 1;
-                }
-            }
-
-            return addressesToLengths;
-        }
-        #endregion
         #endregion
 
         #region WriteTo
@@ -238,7 +191,7 @@ namespace ModbusConverter
         {
             foreach (var (address, value) in addressValuePairs)
             {
-                _inputRegisterOverrides[address] = value;
+                _holdingRegisterOverrides[address] = value;
             }
 
             CallHoldingRegistersChanged(addressValuePairs.Keys);
@@ -280,6 +233,74 @@ namespace ModbusConverter
             CallHoldingRegistersChanged(addresses);
         }
 
+        public IEnumerable<KeyValuePair<int, bool>> GetCoilOverrides()
+        {
+            return _coilOverrides.AsEnumerable();
+        }
+
+        public IEnumerable<KeyValuePair<int, bool>> GetDiscreteInputOverrides()
+        {
+            return _discreteInputOverrides.AsEnumerable();
+        }
+
+        public IEnumerable<KeyValuePair<int, ushort>> GetInputRegisterOverrides()
+        {
+            return _inputRegisterOverrides.AsEnumerable();
+        }
+
+        public IEnumerable<KeyValuePair<int, ushort>> GetHoldingRegisterOverrides()
+        {
+            return _holdingRegisterOverrides.AsEnumerable();
+        }
+
+        #endregion
+
+        #region Utils
+        private void CallCoilsChanged(IEnumerable<int> addresses)
+        {
+            var aggregated = AggregateAddresses(addresses);
+            foreach (var (address, length) in aggregated)
+            {
+                CoilsChanged(address, length);
+            }
+        }
+
+        private void CallHoldingRegistersChanged(IEnumerable<int> addresses)
+        {
+            var aggregated = AggregateAddresses(addresses);
+            foreach (var (address, length) in aggregated)
+            {
+                HoldingRegistersChanged(address, length);
+            }
+        }
+
+        private Dictionary<int, int> AggregateAddresses(IEnumerable<int> addresses)
+        {
+            if (addresses.Count() == 0)
+                return default;
+
+            var sorted = addresses.OrderBy(i => i).ToArray();
+
+            var addressesToLengths = new Dictionary<int, int>();
+
+            int startOfCurrentSequence = sorted[0];
+            addressesToLengths[startOfCurrentSequence] = 1;
+            for (int i = 1; i < sorted.Length; ++i)
+            {
+                var subsequentAddressesDiff = sorted[i] - sorted[i - 1];
+                if (subsequentAddressesDiff > 1)
+                {
+                    startOfCurrentSequence = sorted[i];
+                    addressesToLengths[startOfCurrentSequence] = 1;
+                }
+                else
+                {
+                    addressesToLengths[startOfCurrentSequence] += 1;
+                }
+            }
+
+            return addressesToLengths;
+        }
         #endregion
 
     }

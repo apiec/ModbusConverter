@@ -6,11 +6,6 @@ using ModbusConverter.PeripheralDevices.Peripherals;
 
 namespace ModbusConverter.PeripheralDevices.Config
 {
-    public class PeripheralTypeHaver
-    {
-        public string Type { get; set; }
-    }
-
     public class PeripheralConfig
     {
         public PeripheralConfig()
@@ -22,8 +17,10 @@ namespace ModbusConverter.PeripheralDevices.Config
             RegisterType = peripheral.RegisterType.ToString();
             RegisterAddress = peripheral.RegisterAddress;
             Name = peripheral.Name;
+            Type = peripheral.GetType().Name;
         }
 
+        public string Type { get; set; }
         public string RegisterType { get; set; }
         public int RegisterAddress { get; set; }
         public string Name { get; set; }

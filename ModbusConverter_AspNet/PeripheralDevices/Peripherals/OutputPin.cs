@@ -40,9 +40,9 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             }
         }
 
-        protected override int DataLengthInBools => 1;
+        public override int DataLengthInBools => 1;
 
-        protected override int DataLengthInRegisters => 1;
+        public override int DataLengthInRegisters => 1;
 
         public override PeripheralConfig GetConfig()
         {

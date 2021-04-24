@@ -24,9 +24,9 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public int PinNumber { get; set; }
 
-        protected override int DataLengthInBools => throw new NotSupportedException();
+        public override int DataLengthInBools => throw new NotSupportedException();
 
-        protected override int DataLengthInRegisters => (int)Math.Ceiling((double)sizeof(byte) / sizeof(ushort));
+        public override int DataLengthInRegisters => (int)Math.Ceiling((double)sizeof(byte) / sizeof(ushort));
 
         public override PeripheralConfig GetConfig()
         {
