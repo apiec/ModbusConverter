@@ -16,9 +16,7 @@ namespace ModbusConverter.PeripheralDevices
         public PeripheralsManager(IPeripheralsConfigFile peripheralsConfigFile)
         {
             _peripheralsConfigFile = peripheralsConfigFile;
-            _peripherals = peripheralsConfigFile
-                .ReadConfigFile()
-                .ToHashSet();
+            LoadConfigFile();
         }
 
         public IEnumerable<IPeripheral> Peripherals => _peripherals.AsEnumerable();
@@ -68,7 +66,7 @@ namespace ModbusConverter.PeripheralDevices
             _peripheralsConfigFile.WriteToConfigFile(Peripherals);
         }
 
-        public void ReloadConfigFile()
+        public void LoadConfigFile()
         {
             _peripherals = _peripheralsConfigFile
                 .ReadConfigFile()

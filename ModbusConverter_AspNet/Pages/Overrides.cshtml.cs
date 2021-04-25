@@ -20,11 +20,23 @@ namespace ModbusConverter.Pages
         [BindProperty] public bool BoolValue { get; set; }
         [BindProperty] public string RegisterType { get; set; }
 
-        public List<List<string>> Rows
+
+        public class OverridesRow
+        {
+            public int? CoilAddress { get; set; }
+            public bool? CoilValue { get; set; }
+            public int? DiscreteInputAddress { get; set; }
+            public bool? DiscreteInputValue { get; set; }
+            public int? InputRegisterAddress { get; set; }
+            public int? InputRegisterValue { get; set; }
+            public int? HoldingRegisterAddress { get; set; }
+            public int? HoldingRegisterValue { get; set; }
+        }
+        public List<OverridesRow> Rows
         {
             get
             {
-                var result = new List<List<string>>();
+                var result = new List<OverridesRow>();
                 var coilOverrides = ModbusServerWrapper.GetCoilOverrides()
                     .OrderBy(p => p.Key)
                     .ToArray();
@@ -42,22 +54,24 @@ namespace ModbusConverter.Pages
 
                 for (int i = 0; i < lens.Max(); ++i)
                 {
-                    result.Add(new List<string>
+                    result.Add(new OverridesRow
                     {
-                        i < coilOverrides.Count() ? coilOverrides[i].Key.ToString() : string.Empty,
-                        i < coilOverrides.Count() ? coilOverrides[i].Value.ToString() : string.Empty,
-                        i < discreteOverrides.Count() ? discreteOverrides[i].Key.ToString() : string.Empty,
-                        i < discreteOverrides.Count() ? discreteOverrides[i].Value.ToString() : string.Empty,
-                        i < inputOverrides.Count() ? inputOverrides[i].Key.ToString() : string.Empty,
-                        i < inputOverrides.Count() ? inputOverrides[i].Value.ToString() : string.Empty,
-                        i < holdingOverrides.Count() ? holdingOverrides[i].Key.ToString() : string.Empty,
-                        i < holdingOverrides.Count() ? holdingOverrides[i].Value.ToString() : string.Empty,
+                        CoilAddress = i < coilOverrides.Count() ? coilOverrides[i].Key : null,
+                        CoilValue = i < coilOverrides.Count() ? coilOverrides[i].Value : null,
+                        DiscreteInputAddress =  i < discreteOverrides.Count() ? discreteOverrides[i].Key : null,
+                        DiscreteInputValue = i < discreteOverrides.Count() ? discreteOverrides[i].Value : null,
+                        InputRegisterAddress = i < inputOverrides.Count() ? inputOverrides[i].Key : null,
+                        InputRegisterValue = i < inputOverrides.Count() ? inputOverrides[i].Value : null,
+                        HoldingRegisterAddress = i < holdingOverrides.Count() ? holdingOverrides[i].Key : null,
+                        HoldingRegisterValue = i < holdingOverrides.Count() ? holdingOverrides[i].Value : null,
                     });
                 }
 
                 return result;
             }
         }
+
+
 
         public void OnPostAdd()
         {
