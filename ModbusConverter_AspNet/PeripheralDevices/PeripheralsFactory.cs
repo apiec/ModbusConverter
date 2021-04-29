@@ -7,23 +7,24 @@ using System.Device.Gpio;
 using System.Device.Pwm;
 using Microsoft.Extensions.Configuration;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
     public class PeripheralsFactory : IPeripheralsFactory
     {
-        private readonly IModbusServerWrapper _modbusServerProxy;
+        private readonly IModbusServerWrapper _modbusServerWrapper;
         private readonly GpioController _gpioController;
         private readonly IAnalogIOController _analogIOController;
         private readonly List<int> _pwmPins;
 
         public PeripheralsFactory(
-            IModbusServerWrapper modbusServerProxy,
+            IModbusServerWrapper modbusServerWrapper,
             GpioController gpioController,
             IAnalogIOController analogIOController,
             IConfiguration configuration)
         {
-            _modbusServerProxy = modbusServerProxy;
+            _modbusServerWrapper = modbusServerWrapper;
             _gpioController = gpioController;
             _analogIOController = analogIOController;
             _pwmPins = new List<int>();
@@ -78,7 +79,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public AnalogInputChannel CreateAnalogInputChannel(int pcf8591Number, PCF8591Device.InputMode inputMode)
         {
-            var analogInputChannel = new AnalogInputChannel(_analogIOController, _modbusServerProxy);
+            var analogInputChannel = new AnalogInputChannel(_analogIOController, _modbusServerWrapper);
             analogInputChannel.PCF8591Number = pcf8591Number;
             analogInputChannel.InputMode = inputMode;
 
@@ -87,7 +88,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public AnalogOutputChannel CreateAnalogOutputChannel(int pcf8591Number)
         {
-            var analogOutputChannel = new AnalogOutputChannel(_analogIOController, _modbusServerProxy);
+            var analogOutputChannel = new AnalogOutputChannel(_analogIOController, _modbusServerWrapper);
             analogOutputChannel.PCF8591Number = pcf8591Number;
 
             return analogOutputChannel;
@@ -95,7 +96,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public InputPin CreateInputPin(int pinNumber)
         {
-            var inputPin = new InputPin(_gpioController, _modbusServerProxy);
+            var inputPin = new InputPin(_gpioController, _modbusServerWrapper);
             inputPin.PinNumber = pinNumber;
 
             return inputPin;
@@ -103,7 +104,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public OutputPin CreateOutputPin(int pinNumber)
         {
-            var outputPin = new OutputPin(_gpioController, _modbusServerProxy);
+            var outputPin = new OutputPin(_gpioController, _modbusServerWrapper);
             outputPin.PinNumber = pinNumber;
 
             return outputPin;
@@ -119,7 +120,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
             //using raspi built in pwm chip, channels are 0 and 1
             var pwmChannel = PwmChannel.Create(chip: 0, channel: index, dutyCyclePercentage: 0);
-            var pwmPin = new PwmPin(pwmChannel, _modbusServerProxy);
+            var pwmPin = new PwmPin(pwmChannel, _modbusServerWrapper);
             pwmPin.PinNumber = pinNumber;
 
             return pwmPin;

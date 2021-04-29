@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Device.Gpio;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -39,10 +40,6 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
                 _gpioController.OpenPin(_pinNumber, PinMode.Output);
             }
         }
-
-        public override int DataLengthInBools => 1;
-
-        public override int DataLengthInRegisters => 1;
 
         public override PeripheralConfig GetConfig()
         {

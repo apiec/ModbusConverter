@@ -4,17 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.Pages
 {
     public class OverridesModel : PageModel
     {
 
-        public OverridesModel(IModbusServerWrapper modbusServerWrapper)
+        public OverridesModel(IModbusOverrider modbusOverrider)
         {
-            ModbusServerWrapper = modbusServerWrapper;
+            ModbusOverrider = modbusOverrider;
         }
-        public IModbusServerWrapper ModbusServerWrapper { get; set; }
+        public IModbusOverrider ModbusOverrider { get; set; }
         [BindProperty] public int Address { get; set; }
         [BindProperty] public ushort Value { get; set; }
         [BindProperty] public bool BoolValue { get; set; }
@@ -37,16 +38,16 @@ namespace ModbusConverter.Pages
             get
             {
                 var result = new List<OverridesRow>();
-                var coilOverrides = ModbusServerWrapper.GetCoilOverrides()
+                var coilOverrides = ModbusOverrider.GetCoilOverrides()
                     .OrderBy(p => p.Key)
                     .ToArray();
-                var discreteOverrides = ModbusServerWrapper.GetDiscreteInputOverrides()
+                var discreteOverrides = ModbusOverrider.GetDiscreteInputOverrides()
                     .OrderBy(p => p.Key)
                     .ToArray();
-                var inputOverrides = ModbusServerWrapper.GetInputRegisterOverrides()
+                var inputOverrides = ModbusOverrider.GetInputRegisterOverrides()
                     .OrderBy(p => p.Key)
                     .ToArray();
-                var holdingOverrides = ModbusServerWrapper.GetHoldingRegisterOverrides()
+                var holdingOverrides = ModbusOverrider.GetHoldingRegisterOverrides()
                     .OrderBy(p => p.Key)
                     .ToArray();
 
@@ -94,19 +95,19 @@ namespace ModbusConverter.Pages
             {
                 case ModbusRegisterType.Coil:
                     boolDict.Add(Address, BoolValue);
-                    ModbusServerWrapper.OverrideCoils(boolDict);
+                    ModbusOverrider.OverrideCoils(boolDict);
                     break;
                 case ModbusRegisterType.DiscreteInput:
                     boolDict.Add(Address, BoolValue);
-                    ModbusServerWrapper.OverrideDiscreteInputs(boolDict);
+                    ModbusOverrider.OverrideDiscreteInputs(boolDict);
                     break;
                 case ModbusRegisterType.InputRegister:
                     ushortDict.Add(Address, Value);
-                    ModbusServerWrapper.OverrideInputRegisters(ushortDict);
+                    ModbusOverrider.OverrideInputRegisters(ushortDict);
                     break;
                 case ModbusRegisterType.HoldingRegister:
                     ushortDict.Add(Address, Value);
-                    ModbusServerWrapper.OverrideHoldingRegisters(ushortDict);
+                    ModbusOverrider.OverrideHoldingRegisters(ushortDict);
                     break;
             }
             Address = 0;
@@ -133,16 +134,16 @@ namespace ModbusConverter.Pages
             switch (registerType)
             {
                 case ModbusRegisterType.Coil:
-                    ModbusServerWrapper.StopOverridingCoils(array);
+                    ModbusOverrider.StopOverridingCoils(array);
                     break;
                 case ModbusRegisterType.DiscreteInput:
-                    ModbusServerWrapper.StopOverridingDiscreteInputs(array);
+                    ModbusOverrider.StopOverridingDiscreteInputs(array);
                     break;
                 case ModbusRegisterType.InputRegister:
-                    ModbusServerWrapper.StopOverridingInputRegisters(array);
+                    ModbusOverrider.StopOverridingInputRegisters(array);
                     break;
                 case ModbusRegisterType.HoldingRegister:
-                    ModbusServerWrapper.StopOverridingHoldingRegisters(array);
+                    ModbusOverrider.StopOverridingHoldingRegisters(array);
                     break;
             }
 

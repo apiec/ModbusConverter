@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Device.Gpio;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {

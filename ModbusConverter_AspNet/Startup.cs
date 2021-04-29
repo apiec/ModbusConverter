@@ -7,15 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EasyModbus;
-using System.Device.I2c;
 using ModbusConverter.PeripheralDevices;
 using System.Device.Gpio;
 using Microsoft.Extensions.Configuration;
 using ModbusConverter.PeripheralDevices.Peripherals;
 using ModbusConverter.PeripheralDevices.AnalogIO;
 using ModbusConverter.PeripheralDevices.Config;
-using static ModbusConverter.PeripheralDevices.AnalogIO.PCF8591Device;
-using System.Text.Json;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter
 {
@@ -48,7 +46,11 @@ namespace ModbusConverter
             services.AddSingleton<GpioController>();
             services.AddSingleton<ModbusServer>();
 
-            services.AddSingleton<IModbusServerWrapper, ModbusServerWrapper>();
+            services.AddSingleton<OverridingModbusServerWrapper>();
+
+            services.AddSingleton<IModbusServerWrapper>(provider => provider.GetRequiredService<OverridingModbusServerWrapper>());
+            services.AddSingleton<IModbusOverrider>(provider => provider.GetRequiredService<OverridingModbusServerWrapper>());
+            
             services.AddSingleton<IPeripheralsManager, PeripheralsManager>();
             services.AddSingleton<IPeripheralsFactory, PeripheralsFactory>();
             services.AddSingleton<IPeripheralsConfigFile, PeripheralsConfigFile>();

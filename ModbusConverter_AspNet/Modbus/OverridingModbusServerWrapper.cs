@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using EasyModbus;
 
-namespace ModbusConverter
+namespace ModbusConverter.Modbus
 {
-    public class ModbusServerWrapper : IModbusServerWrapper
+    public class OverridingModbusServerWrapper : IModbusServerWrapper, IModbusOverrider
     {
         private readonly ModbusServer _modbusServer;
         private readonly Dictionary<int, bool> _coilOverrides = new Dictionary<int, bool>();
@@ -14,7 +14,7 @@ namespace ModbusConverter
         private readonly Dictionary<int, ushort> _inputRegisterOverrides = new Dictionary<int, ushort>();
         private readonly Dictionary<int, ushort> _holdingRegisterOverrides = new Dictionary<int, ushort>();
 
-        public ModbusServerWrapper(ModbusServer modbusServer)
+        public OverridingModbusServerWrapper(ModbusServer modbusServer)
         {
             _modbusServer = modbusServer;
             _modbusServer.CoilsChanged += CoilsChangedHandler;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EasyModbus;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -16,6 +17,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
     }
 
     public abstract class OutputPeripheral<T> : IOutputPeripheral
+        where T : unmanaged
     {
         private readonly IModbusServerWrapper _modbusServerWrapper;
         private readonly Dictionary<ModbusRegisterType, Func<T>> _readValueFuncs;
@@ -36,7 +38,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         public ModbusRegisterType RegisterType { get; set; }
         public int RegisterAddress { get; set; }
         public string Name { get; set; }
-        
+
         public abstract PeripheralConfig GetConfig();
 
 
@@ -76,12 +78,26 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         {
             var registers = _modbusServerWrapper.ReadHoldingRegisters(RegisterAddress, DataLengthInRegisters);
             var value = ReadValueFromRegisters(registers);
- 
-            return value;
-         }
 
-        public abstract int DataLengthInBools { get; }
-        public abstract int DataLengthInRegisters { get; }
+            return value;
+        }
+
+        public virtual unsafe int DataLengthInBools
+        {
+            get
+            {
+                if (typeof(T) == typeof(bool))
+                {
+                    return 1;
+                }
+                else
+                {
+                    throw new NotSupportedException("Only a bool can have a length in bools at the moment");
+                }
+            }
+        }
+        
+        public virtual unsafe int DataLengthInRegisters => (sizeof(T) + sizeof(ushort) - 1) / sizeof(ushort);
 
         protected abstract T ReadValueFromBools(bool[] bools);
         protected abstract T ReadValueFromRegisters(ushort[] registers);

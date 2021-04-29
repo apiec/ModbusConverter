@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ModbusConverter.PeripheralDevices.AnalogIO;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -18,10 +19,6 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         }
 
         public int PCF8591Number { get; set; }
-
-        public override int DataLengthInBools => throw new NotSupportedException();
-
-        public override int DataLengthInRegisters => 1;
 
         public override PeripheralConfig GetConfig()
         {

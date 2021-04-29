@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ModbusConverter.PeripheralDevices.AnalogIO;
 using EasyModbus;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {

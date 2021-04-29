@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EasyModbus;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
