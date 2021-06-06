@@ -43,6 +43,8 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
                 output = Min;
             }
 
+            _previousError = error;
+
             return output;
         }
     }
