@@ -13,8 +13,8 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         private readonly GpioController _gpioController;
         private int _pinNumber;
 
-        public OutputPin(GpioController gpioController, IModbusServerWrapper modbusServerProxy)
-            : base(modbusServerProxy)
+        public OutputPin(GpioController gpioController, IModbusServerWrapper modbusServerWrapper)
+            : base(modbusServerWrapper)
         {
             _gpioController = gpioController;
         }

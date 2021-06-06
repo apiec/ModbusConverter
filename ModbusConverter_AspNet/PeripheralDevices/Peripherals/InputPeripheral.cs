@@ -8,12 +8,7 @@ using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
-    public interface IInputPeripheral : IPeripheral
-    {
-        void ReadAndSaveDataToRegister();
-    }
-
-    public abstract class InputPeripheral : IInputPeripheral
+    public abstract class InputPeripheral : IPeripheral
     {
         private readonly IModbusServerWrapper _modbusServerProxy;
         private readonly Dictionary<ModbusRegisterType, Action> _saveDataActions;
@@ -36,6 +31,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public abstract PeripheralConfig GetConfig();
 
+        public void Update() => ReadAndSaveDataToRegister();
         public void ReadAndSaveDataToRegister()
         {
             var saveDataAction = _saveDataActions[RegisterType];

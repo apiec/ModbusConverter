@@ -8,15 +8,7 @@ using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
-    public interface IOutputPeripheral : IPeripheral
-    {
-        int DataLengthInBools { get; }
-        int DataLengthInRegisters { get; }
-
-        void ReadRegisterAndWriteToOutput();
-    }
-
-    public abstract class OutputPeripheral<T> : IOutputPeripheral
+    public abstract class OutputPeripheral<T> : IPeripheral
         where T : unmanaged
     {
         private readonly IModbusServerWrapper _modbusServerWrapper;
@@ -41,8 +33,9 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public abstract PeripheralConfig GetConfig();
 
+        public void Update() => ReadRegisterAndWriteToOutput();
 
-        public void ReadRegisterAndWriteToOutput()
+        private void ReadRegisterAndWriteToOutput()
         {
             var readValueFunc = _readValueFuncs[RegisterType];
             var value = readValueFunc();

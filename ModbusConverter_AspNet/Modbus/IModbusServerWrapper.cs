@@ -8,7 +8,6 @@ namespace ModbusConverter.Modbus
         event ModbusServer.CoilsChangedHandler CoilsChanged;
         event ModbusServer.HoldingRegistersChangedHandler HoldingRegistersChanged;
 
-
         bool[] ReadCoils(int address, int numberOfRegisters);
         bool[] ReadDiscreteInputs(int address, int numberOfRegisters);
         ushort[] ReadHoldingRegisters(int address, int numberOfRegisters);

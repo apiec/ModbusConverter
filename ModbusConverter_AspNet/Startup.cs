@@ -56,7 +56,6 @@ namespace ModbusConverter
             services.AddSingleton<IPeripheralsConfigFile, PeripheralsConfigFile>();
             services.AddSingleton<IPCF8591DeviceFactory, PCF8591DeviceFactory>();
             services.AddSingleton<IAnalogIOController, AnalogIOController>();
-            services.AddSingleton<IOutputsUpdater, OutputsUpdater>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,30 +68,12 @@ namespace ModbusConverter
             app.UseRouting();
             app.UseStaticFiles();
 
-            var manager = app.ApplicationServices.GetRequiredService<IPeripheralsManager>();
-            var file = app.ApplicationServices.GetRequiredService<IPeripheralsConfigFile>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                //endpoints.MapGet("/Peripherals", async context =>
-                //{
-                //    var json = file.SerializePeripherals(manager.Peripherals);
-                //    await context.Response.WriteAsync(json);
-                //});
             });
 
-            
-
-            SubscribeOutputsUpdater(app);
             ModbusServerStartListening(app);
-        }
-
-        private void SubscribeOutputsUpdater(IApplicationBuilder app)
-        {
-            var outputsUpdater = app.ApplicationServices.GetRequiredService<IOutputsUpdater>();
-            var serverWrapper = app.ApplicationServices.GetRequiredService<IModbusServerWrapper>();
-            serverWrapper.CoilsChanged += outputsUpdater.OnCoilsChanged;
-            serverWrapper.HoldingRegistersChanged += outputsUpdater.OnHoldingRegistersChanged;
         }
 
         private void ModbusServerStartListening(IApplicationBuilder app)

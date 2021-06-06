@@ -14,6 +14,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         int RegisterAddress { get; set; }
         string Name { get; set; }
 
+        void Update();
         PeripheralConfig GetConfig();
     }
 

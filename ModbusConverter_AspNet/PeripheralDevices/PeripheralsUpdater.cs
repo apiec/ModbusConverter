@@ -7,11 +7,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace ModbusConverter.PeripheralDevices
 {
-    public class InputsUpdater : BackgroundService
+    public class PeripheralsUpdater : BackgroundService
     {
         private readonly IPeripheralsManager _peripheralsManager;
 
-        public InputsUpdater(IPeripheralsManager peripheralsManager)
+        public PeripheralsUpdater(IPeripheralsManager peripheralsManager)
         {
             _peripheralsManager = peripheralsManager;
         }
@@ -20,14 +20,14 @@ namespace ModbusConverter.PeripheralDevices
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await UpdateInputPeripherals();
+                await UpdatePeripherals();
             }
         }
 
-        private async Task UpdateInputPeripherals()
+        private async Task UpdatePeripherals()
         {
-            var tasks = _peripheralsManager.InputPeripherals
-                .Select(peripheral => Task.Factory.StartNew(() => peripheral.ReadAndSaveDataToRegister()));
+            var tasks = _peripheralsManager.Peripherals
+                .Select(peripheral => Task.Factory.StartNew(() => peripheral.Update()));
 
             await Task.WhenAll(tasks);
         }

@@ -14,8 +14,8 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
     {
         private readonly PwmChannel _pwmChannel;
 
-        public PwmPin(PwmChannel pwmChannel, IModbusServerWrapper modbusServerProxy)
-            : base(modbusServerProxy)
+        public PwmPin(PwmChannel pwmChannel, IModbusServerWrapper modbusServerWrapper)
+            : base(modbusServerWrapper)
         {
             _pwmChannel = pwmChannel;
             _pwmChannel.Frequency = 11000;
