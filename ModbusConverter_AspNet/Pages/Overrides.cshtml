@@ -152,7 +152,7 @@
                             @row.InputRegisterAddress
                         </td>
                         <td>
-                            @row.InputRegisterValue
+                            @row.InputRegisterValue?.ToString("X4")
                         </td>
                     }
                     else
@@ -175,7 +175,7 @@
                             @row.HoldingRegisterAddress
                         </td>
                         <td>
-                            @row.HoldingRegisterValue
+                            @row.HoldingRegisterValue?.ToString("X4")
                         </td>
                     }
                     else

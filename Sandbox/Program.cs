@@ -1,6 +1,7 @@
 ﻿using System;
 using EasyModbus;
 using System.Linq;
+using org.mariuszgromada.math.mxparser;
 
 namespace Sandbox
 {
@@ -8,6 +9,10 @@ namespace Sandbox
     {
         static void Main(string[] args)
         {
+            var e = new Expression("43ydfdlkj");
+
+            Console.WriteLine(e.calculate());
+
         }
 
         static void PrintRegisters(ushort[] registers)

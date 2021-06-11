@@ -8,6 +8,22 @@ using ModbusConverter.Modbus;
 
 namespace ModbusConverter.Pages
 {
+
+
+    public class OverridesRow
+    {
+        public int? CoilAddress { get; set; }
+        public bool? CoilValue { get; set; }
+        public int? DiscreteInputAddress { get; set; }
+        public bool? DiscreteInputValue { get; set; }
+        public int? InputRegisterAddress { get; set; }
+        public int? InputRegisterValue { get; set; }
+        public int? HoldingRegisterAddress { get; set; }
+        public int? HoldingRegisterValue { get; set; }
+    }
+
+
+
     public class OverridesModel : PageModel
     {
 
@@ -17,22 +33,10 @@ namespace ModbusConverter.Pages
         }
         public IModbusOverrider ModbusOverrider { get; set; }
         [BindProperty] public int Address { get; set; }
-        [BindProperty] public ushort Value { get; set; }
+        [BindProperty] public string Value { get; set; }
         [BindProperty] public bool BoolValue { get; set; }
         [BindProperty] public string RegisterType { get; set; }
 
-
-        public class OverridesRow
-        {
-            public int? CoilAddress { get; set; }
-            public bool? CoilValue { get; set; }
-            public int? DiscreteInputAddress { get; set; }
-            public bool? DiscreteInputValue { get; set; }
-            public int? InputRegisterAddress { get; set; }
-            public int? InputRegisterValue { get; set; }
-            public int? HoldingRegisterAddress { get; set; }
-            public int? HoldingRegisterValue { get; set; }
-        }
         public List<OverridesRow> Rows
         {
             get
@@ -91,6 +95,7 @@ namespace ModbusConverter.Pages
 
             var boolDict = new Dictionary<int, bool>();
             var ushortDict = new Dictionary<int, ushort>();
+            var value = ushort.Parse(Value, System.Globalization.NumberStyles.HexNumber);
             switch (registerType)
             {
                 case ModbusRegisterType.Coil:
@@ -102,17 +107,17 @@ namespace ModbusConverter.Pages
                     ModbusOverrider.OverrideDiscreteInputs(boolDict);
                     break;
                 case ModbusRegisterType.InputRegister:
-                    ushortDict.Add(Address, Value);
+                    ushortDict.Add(Address, value);
                     ModbusOverrider.OverrideInputRegisters(ushortDict);
                     break;
                 case ModbusRegisterType.HoldingRegister:
-                    ushortDict.Add(Address, Value);
+                    ushortDict.Add(Address, value);
                     ModbusOverrider.OverrideHoldingRegisters(ushortDict);
                     break;
             }
             Address = 0;
             BoolValue = false;
-            Value = 0;
+            Value = string.Empty;
         }
 
         public void OnPostRemove()
@@ -149,7 +154,7 @@ namespace ModbusConverter.Pages
 
             Address = 0;
             BoolValue = false;
-            Value = 0;
+            Value = string.Empty;
         }
     }
 }
