@@ -27,7 +27,7 @@ namespace ModbusConverter
                 })
                 .ConfigureServices(services =>
                 {
-                    services.AddHostedService<InputsUpdater>();
+                    services.AddHostedService<PeripheralsUpdater>();
                 });
     }
 }

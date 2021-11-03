@@ -6,15 +6,16 @@ using System.Device.Pwm;
 using EasyModbus;
 using System.Device.Gpio;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
-    public class PwmPin : OutputPeripheral<byte>
+    public class PwmPin : OutputPeripheral<float>
     {
         private readonly PwmChannel _pwmChannel;
 
-        public PwmPin(PwmChannel pwmChannel, IModbusServerWrapper modbusServerProxy)
-            : base(modbusServerProxy)
+        public PwmPin(PwmChannel pwmChannel, IModbusServerWrapper modbusServerWrapper)
+            : base(modbusServerWrapper)
         {
             _pwmChannel = pwmChannel;
             _pwmChannel.Frequency = 11000;
@@ -24,36 +25,24 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public int PinNumber { get; set; }
 
-        public override int DataLengthInBools => throw new NotSupportedException();
-
-        public override int DataLengthInRegisters => (int)Math.Ceiling((double)sizeof(byte) / sizeof(ushort));
-
         public override PeripheralConfig GetConfig()
         {
             return new PwmPinConfig(this);
         }
 
-        protected override byte ReadValueFromBools(bool[] bools)
+        protected override float ReadValueFromBools(bool[] bools)
         {
             throw new NotSupportedException();
         }
 
-        protected override byte ReadValueFromRegisters(ushort[] registers)
+        protected override float ReadValueFromRegisters(ushort[] registers)
         {
-            return (byte)registers[0];
+            return ModbusClient.ConvertRegistersToFloat(registers);
         }
 
-        protected override void WriteValueToOutput(byte value)
+        protected override void WriteValueToOutput(float value)
         {
-            _pwmChannel.DutyCycle = (double)value / byte.MaxValue;
-        }
-
-        private void CheckIfValueInBounds(double value)
-        {
-            if (value < 0 || value > 1.0)
-            {
-                throw new ArgumentOutOfRangeException("Pwm duty cycle value has to be in range 0-1");
-            }
+            _pwmChannel.DutyCycle = value;
         }
     }
 }

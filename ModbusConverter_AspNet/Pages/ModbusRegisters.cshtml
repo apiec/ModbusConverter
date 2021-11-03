@@ -1,0 +1,42 @@
+﻿@page
+@model ModbusConverter.Pages.ModbusRegistersModel
+
+
+<div style="margin-top:30px;">
+    <form method="post">
+        <label asp-for="StartingAddress">Address</label>
+        <input asp-for="StartingAddress" />
+        <button>Display</button>
+        <select asp-for="NumberOfRowsToDisplay">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="250">250</option>
+            <option value="500">500</option>
+        </select>
+    </form>
+    <table class="table-bordered">
+        <thead>
+            <tr>
+                <th>Address</th>
+                <th>Coils</th>
+                <th>Discrete Inputs</th>
+                <th>Input registers</th>
+                <th>Holding registers</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.Rows)
+            {
+                <tr>
+                    <td>@row.Address</td>
+                    <td>@row.CoilValue</td>
+                    <td>@row.DiscreteInputValue</td>
+                    <td>@row.InputRegisterValue</td>
+                    <td>@row.HoldingRegisterValue</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

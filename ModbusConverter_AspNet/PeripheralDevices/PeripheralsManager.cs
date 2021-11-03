@@ -16,21 +16,10 @@ namespace ModbusConverter.PeripheralDevices
         public PeripheralsManager(IPeripheralsConfigFile peripheralsConfigFile)
         {
             _peripheralsConfigFile = peripheralsConfigFile;
-            _peripherals = peripheralsConfigFile
-                .ReadConfigFile()
-                .ToHashSet();
+            LoadConfigFile();
         }
 
         public IEnumerable<IPeripheral> Peripherals => _peripherals.AsEnumerable();
-        public IEnumerable<IOutputPeripheral> OutputPeripherals
-            => _peripherals
-                .Where(peripheral => peripheral is IOutputPeripheral)
-                .Select(peripheral => (IOutputPeripheral)peripheral);
-
-        public IEnumerable<IInputPeripheral> InputPeripherals
-            => _peripherals
-                .Where(peripheral => peripheral is IInputPeripheral)
-                .Select(peripheral => (IInputPeripheral)peripheral);
 
         public void AddPeripheralRange(IEnumerable<IPeripheral> peripherals)
         {
@@ -68,7 +57,7 @@ namespace ModbusConverter.PeripheralDevices
             _peripheralsConfigFile.WriteToConfigFile(Peripherals);
         }
 
-        public void ReloadConfigFile()
+        public void LoadConfigFile()
         {
             _peripherals = _peripheralsConfigFile
                 .ReadConfigFile()

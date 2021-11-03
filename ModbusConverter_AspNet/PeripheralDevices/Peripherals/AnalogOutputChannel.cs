@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ModbusConverter.PeripheralDevices.AnalogIO;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -11,17 +12,13 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
     {
         private readonly IAnalogIOController _analogIOController;
 
-        public AnalogOutputChannel(IAnalogIOController analogIOController, IModbusServerWrapper modbusServerProxy)
-            : base(modbusServerProxy)
+        public AnalogOutputChannel(IAnalogIOController analogIOController, IModbusServerWrapper modbusServerWrapper)
+            : base(modbusServerWrapper)
         {
             _analogIOController = analogIOController;
         }
 
         public int PCF8591Number { get; set; }
-
-        public override int DataLengthInBools => throw new NotSupportedException();
-
-        public override int DataLengthInRegisters => 1;
 
         public override PeripheralConfig GetConfig()
         {

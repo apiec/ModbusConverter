@@ -398,17 +398,12 @@ namespace EasyModbus
             byte[] highRegisterBytes = 
             {
                 floatBytes[2],
-                floatBytes[3],
-                0,
-                0
+                floatBytes[3]
             };
             byte[] lowRegisterBytes = 
             {
-                
                 floatBytes[0],
-                floatBytes[1],
-                0,
-                0
+                floatBytes[1]
             };
             ushort[] returnValue =
             {
@@ -440,21 +435,16 @@ namespace EasyModbus
         /// <returns>Register values</returns>
         public static ushort[] ConvertIntToRegisters(int intValue)
         {
-            byte[] doubleBytes = BitConverter.GetBytes(intValue);
+            byte[] intBytes = BitConverter.GetBytes(intValue);
             byte[] highRegisterBytes = 
             {
-                doubleBytes[2],
-                doubleBytes[3],
-                0,
-                0
+                intBytes[2],
+                intBytes[3]
             };
             byte[] lowRegisterBytes = 
             {
-                
-                doubleBytes[0],
-                doubleBytes[1],
-                0,
-                0
+                intBytes[0],
+                intBytes[1]
             };
             ushort[] returnValue =
             {
@@ -490,31 +480,22 @@ namespace EasyModbus
             byte[] highRegisterBytes =
             {
                 longBytes[6],
-                longBytes[7],
-                0,
-                0
+                longBytes[7]
             };
             byte[] highLowRegisterBytes =
             {
                 longBytes[4],
-                longBytes[5],
-                0,
-                0
+                longBytes[5]
             };
             byte[] lowHighRegisterBytes =
             {
                 longBytes[2],
-                longBytes[3],
-                0,
-                0
+                longBytes[3]
             };
             byte[] lowRegisterBytes =
             {
-
                 longBytes[0],
-                longBytes[1],
-                0,
-                0
+                longBytes[1]
             };
             ushort[] returnValue =
             {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ModbusConverter.PeripheralDevices.AnalogIO;
 using EasyModbus;
 using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -12,8 +13,8 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
     {
         private readonly IAnalogIOController _analogIOController;
 
-        public AnalogInputChannel(IAnalogIOController analogIOController, IModbusServerWrapper modbusServerProxy)
-            : base(modbusServerProxy)
+        public AnalogInputChannel(IAnalogIOController analogIOController, IModbusServerWrapper modbusServerWrapper)
+            : base(modbusServerWrapper)
         {
             _analogIOController = analogIOController;
         }

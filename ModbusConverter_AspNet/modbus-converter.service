@@ -1,0 +1,12 @@
+﻿[Unit]
+Description=ModbusConverter
+
+[Service]
+Type=idle
+WorkingDirectory=/usr/local/bin/ModbusConverter/
+ExecStart=/usr/local/bin/ModbusConverter/start.sh
+
+SyslogIdentifier=modbus-converter
+User=root
+[Install]
+WantedBy=multi-user.target

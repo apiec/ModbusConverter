@@ -4,22 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
-    public interface IInputPeripheral : IPeripheral
+    public abstract class InputPeripheral : IPeripheral
     {
-        void ReadAndSaveDataToRegister();
-    }
-
-    public abstract class InputPeripheral : IInputPeripheral
-    {
-        private readonly IModbusServerWrapper _modbusServerProxy;
+        private readonly IModbusServerWrapper _modbusServerWrapper;
         private readonly Dictionary<ModbusRegisterType, Action> _saveDataActions;
 
-        public InputPeripheral(IModbusServerWrapper modbusServerProxy)
+        public InputPeripheral(IModbusServerWrapper modbusServerWrapper)
         {
-            _modbusServerProxy = modbusServerProxy;
+            _modbusServerWrapper = modbusServerWrapper;
             _saveDataActions = new Dictionary<ModbusRegisterType, Action>
             {
                 { ModbusRegisterType.Coil, SaveDataToCoils },
@@ -35,6 +31,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public abstract PeripheralConfig GetConfig();
 
+        public void Update() => ReadAndSaveDataToRegister();
         public void ReadAndSaveDataToRegister()
         {
             var saveDataAction = _saveDataActions[RegisterType];
@@ -44,25 +41,25 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         private void SaveDataToCoils()
         {
             var data = ReadDataAsBools();
-            _modbusServerProxy.WriteToCoils(RegisterAddress, data);
+            _modbusServerWrapper.WriteToCoils(RegisterAddress, data);
         }
 
         private void SaveDataToDiscreteInputs()
         {
             var data = ReadDataAsBools();
-            _modbusServerProxy.WriteToDiscreteInputs(RegisterAddress, data);
+            _modbusServerWrapper.WriteToDiscreteInputs(RegisterAddress, data);
         }
 
         private void SaveDataToInputRegisters()
         {
             var data = ReadDataAsUshorts();
-            _modbusServerProxy.WriteToInputRegisters(RegisterAddress, data);
+            _modbusServerWrapper.WriteToInputRegisters(RegisterAddress, data);
         }
 
         private void SaveDataToHoldingRegisters()
         {
             var data = ReadDataAsUshorts();
-            _modbusServerProxy.WriteToHoldingRegisters(RegisterAddress, data);
+            _modbusServerWrapper.WriteToHoldingRegisters(RegisterAddress, data);
         }
 
         protected abstract bool[] ReadDataAsBools();
