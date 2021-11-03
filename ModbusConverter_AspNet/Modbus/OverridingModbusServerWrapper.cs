@@ -6,14 +6,22 @@ using EasyModbus;
 
 namespace ModbusConverter.Modbus
 {
-    public class OverridingModbusServerWrapper : IModbusServerWrapper, IModbusOverrider
+    public class OverridingModbusServerWrapper : IModbusServerWrapper, IOverridesManager
     {
         private readonly ModbusServer _modbusServer;
 
-        private readonly DataOverrider<bool> _coilOverrider;
-        private readonly DataOverrider<bool> _discreteInputOverrider;
-        private readonly DataOverrider<ushort> _inputRegisterOverrider;
-        private readonly DataOverrider<ushort> _holdingRegisterOverrider;
+        private readonly DataOverrider _coilOverrider;
+        private readonly DataOverrider _discreteInputOverrider;
+        private readonly DataOverrider _inputRegisterOverrider;
+        private readonly DataOverrider _holdingRegisterOverrider;
+
+        public IEnumerable<DynamicOverride> CoilsOverrides => _coilOverrider.Overrides;
+
+        public IEnumerable<DynamicOverride> DiscreteInputsOverrides => _discreteInputOverrider.Overrides;
+
+        public IEnumerable<DynamicOverride> HoldingRegistersOverrides => _holdingRegisterOverrider.Overrides;
+
+        public IEnumerable<DynamicOverride> InputRegistersOverrides => _inputRegisterOverrider.Overrides;
 
         public OverridingModbusServerWrapper(ModbusServer modbusServer)
         {
@@ -21,221 +29,214 @@ namespace ModbusConverter.Modbus
             _modbusServer.CoilsChanged += CoilsChangedHandler;
             _modbusServer.HoldingRegistersChanged += HoldingRegistersChangedHandler;
 
-            _coilOverrider = new DataOverrider<bool>(
-                (address, value) => _modbusServer.coils[address] = value,
-                address => _modbusServer.coils[address]);
+            _coilOverrider = new DataOverrider(
+                (address, data) =>
+                {
+                    for (int i = 0; i < data.Length; ++i)
+                    {
+                        _modbusServer.coils[address + i] = Convert.ToBoolean(data[i]);
+                    }
+                },
+                (address, length) =>
+                {
+                    var data = new ushort[length];
+                    for (int i = 0; i < length; ++i)
+                    {
+                        data[i] = Convert.ToUInt16(_modbusServer.coils[address + i]);
+                    }
 
-            _discreteInputOverrider= new DataOverrider<bool>(
-                (address, value) => _modbusServer.discreteInputs[address] = value,
-                address => _modbusServer.discreteInputs[address]);
+                    return data;
+                });
 
-            _inputRegisterOverrider = new DataOverrider<ushort>(
-                (address, value) => _modbusServer.inputRegisters[address] = value,
-                address => _modbusServer.inputRegisters[address]);
+            _discreteInputOverrider = new DataOverrider(
+                (address, data) =>
+                {
+                    for (int i = 0; i < data.Length; ++i)
+                    {
+                        _modbusServer.discreteInputs[address + i] = Convert.ToBoolean(data[i]);
+                    }
+                },
+                (address, length) =>
+                {
+                    var data = new ushort[length];
+                    for (int i = 0; i < length; ++i)
+                    {
+                        data[i] = Convert.ToUInt16(_modbusServer.discreteInputs[address + i]);
+                    }
 
-            _holdingRegisterOverrider = new DataOverrider<ushort>(
-                (address, value) => _modbusServer.holdingRegisters[address] = value,
-                address => _modbusServer.holdingRegisters[address]);
+                    return data;
+                });
+
+            _inputRegisterOverrider = new DataOverrider(
+                (address, data) =>
+                {
+                    for (int i = 0; i < data.Length; ++i)
+                    {
+                        _modbusServer.inputRegisters[address + i] = data[i];
+                    }
+                },
+                (address, length) =>
+                {
+                    var data = new ushort[length];
+                    for (int i = 0; i < length; ++i)
+                    {
+                        data[i] = _modbusServer.inputRegisters[address + i];
+                    }
+
+                    return data;
+                });
+
+            _holdingRegisterOverrider = new DataOverrider(
+                (address, data) =>
+                {
+                    for (int i = 0; i < data.Length; ++i)
+                    {
+                        _modbusServer.holdingRegisters[address + i] = data[i];
+                    }
+                },
+                (address, length) =>
+                {
+                    var data = new ushort[length];
+                    for (int i = 0; i < length; ++i)
+                    {
+                        data[i] = _modbusServer.holdingRegisters[address + i];
+                    }
+
+                    return data;
+                });
         }
 
-        public event ModbusServer.CoilsChangedHandler CoilsChanged;
-        public event ModbusServer.HoldingRegistersChangedHandler HoldingRegistersChanged;
+        public event ModbusServer.CoilsChangedHandler CoilsChanged = delegate { };
+        public event ModbusServer.HoldingRegistersChangedHandler HoldingRegistersChanged = delegate { };
 
         private void CoilsChangedHandler(int coil, int numberOfCoils)
         {
+            var data = new ushort[numberOfCoils];
+            for (int i = 0; i < numberOfCoils; ++i)
+            {
+                data[i] = Convert.ToUInt16(_modbusServer.coils[coil + i]);
+            }
+
+            _coilOverrider.Write(coil, data);
+
             CoilsChanged(coil, numberOfCoils);
         }
 
         private void HoldingRegistersChangedHandler(int register, int numberOfRegisters)
         {
+            var data = new ushort[numberOfRegisters];
+            for (int i = 0; i < numberOfRegisters; ++i)
+            {
+                data[i] = _modbusServer.holdingRegisters[register + i];
+            }
+
+            _holdingRegisterOverrider.Write(register, data);
+
             HoldingRegistersChanged(register, numberOfRegisters);
         }
 
         public void WriteToCoils(int address, bool[] registers)
         {
-            for (int i = 0; i < registers.Length; ++i)
-            {
-                _coilOverrider.Write(address + i, registers[i]);
-            }
+            var data = registers.Select(r => Convert.ToUInt16(r)).ToArray();
+
+            _coilOverrider.Write(address, data);
         }
 
         public void WriteToDiscreteInputs(int address, bool[] registers)
         {
-            for (int i = 0; i < registers.Length; ++i)
-            {
-                _discreteInputOverrider.Write(address + i, registers[i]);
-            }
+            var data = registers.Select(r => Convert.ToUInt16(r)).ToArray();
+
+            _discreteInputOverrider.Write(address, data);
         }
 
         public void WriteToInputRegisters(int address, ushort[] registers)
         {
-            for (int i = 0; i < registers.Length; ++i)
-            {
-                _inputRegisterOverrider.Write(address + i, registers[i]);
-            }
+            _inputRegisterOverrider.Write(address, registers);
         }
 
         public void WriteToHoldingRegisters(int address, ushort[] registers)
         {
-            for (int i = 0; i < registers.Length; ++i)
-            {
-                _holdingRegisterOverrider.Write(address + i, registers[i]);
-            }
+            _holdingRegisterOverrider.Write(address, registers);
         }
 
         public bool[] ReadCoils(int address, int numberOfRegisters)
         {
-            return Enumerable.Range(address, numberOfRegisters)
-                .Select(x => _coilOverrider.Read(x))
-                .ToArray();
+            var result = new bool[numberOfRegisters];
+            for (int i = 0; i < numberOfRegisters; ++i)
+            {
+                result[i] = _modbusServer.coils[address + i];
+            }
+            return result;
         }
 
         public bool[] ReadDiscreteInputs(int address, int numberOfRegisters)
         {
-            return Enumerable.Range(address, numberOfRegisters)
-                .Select(x => _discreteInputOverrider.Read(x))
-                .ToArray();
+            var result = new bool[numberOfRegisters];
+            for (int i = 0; i < numberOfRegisters; ++i)
+            {
+                result[i] = _modbusServer.discreteInputs[address + i];
+            }
+            return result;
         }
 
         public ushort[] ReadInputRegisters(int address, int numberOfRegisters)
         {
-            return Enumerable.Range(address, numberOfRegisters)
-                .Select(x => _inputRegisterOverrider.Read(x))
-                .ToArray();
+            var result = new ushort[numberOfRegisters];
+            for (int i = 0; i < numberOfRegisters; ++i)
+            {
+                result[i] = _modbusServer.inputRegisters[address + i];
+            }
+            return result;
         }
 
         public ushort[] ReadHoldingRegisters(int address, int numberOfRegisters)
         {
-            return Enumerable.Range(address, numberOfRegisters)
-                .Select(x => _holdingRegisterOverrider.Read(x))
-                .ToArray();
+            var result = new ushort[numberOfRegisters];
+            for (int i = 0; i < numberOfRegisters; ++i)
+            {
+                result[i] = _modbusServer.inputRegisters[address + i];
+            }
+            return result;
         }
 
-        public void OverrideCoils(IDictionary<int, bool> addressValuePairs)
+        public void AddCoilOverride(int address, string expression)
         {
-            foreach (var (address, value) in addressValuePairs)
-            {
-                _coilOverrider.Override(address, value);
-            }
-            CallCoilsChanged(addressValuePairs.Keys);
+            _coilOverrider.Override(address, expression, DataType.Bool);
         }
 
-        public void OverrideDiscreteInputs(IDictionary<int, bool> addressValuePairs)
+        public void AddDiscreteInputOverride(int address, string expression)
         {
-            foreach (var (address, value) in addressValuePairs)
-            {
-                _discreteInputOverrider.Override(address, value);
-            }
+            _discreteInputOverrider.Override(address, expression, DataType.Bool);
         }
 
-        public void OverrideInputRegisters(IDictionary<int, ushort> addressValuePairs)
+        public void AddHoldingRegisterOverride(int address, string expression, DataType dataType)
         {
-            foreach (var (address, value) in addressValuePairs)
-            {
-                _inputRegisterOverrider.Override(address, value);
-            }
+            _holdingRegisterOverrider.Override(address, expression, dataType);
         }
 
-        public void OverrideHoldingRegisters(IDictionary<int, ushort> addressValuePairs)
+        public void AddInputRegisterOverride(int address, string expression, DataType dataType)
         {
-            foreach (var (address, value) in addressValuePairs)
-            {
-                _holdingRegisterOverrider.Override(address, value);
-            }
-            CallHoldingRegistersChanged(addressValuePairs.Keys);
+            _inputRegisterOverrider.Override(address, expression, dataType);
         }
 
-        public void StopOverridingCoils(IEnumerable<int> addresses)
+        public void RemoveCoilOverride(Guid guid)
         {
-            foreach (var address in addresses)
-            {
-                _coilOverrider.StopOverriding(address);
-            }
-
-            CallCoilsChanged(addresses);
+            _coilOverrider.StopOverriding(guid);
         }
 
-        public void StopOverridingDiscreteInputs(IEnumerable<int> addresses)
+        public void RemoveDiscreteInputOverride(Guid guid)
         {
-            foreach (var address in addresses)
-            {
-                _discreteInputOverrider.StopOverriding(address);
-            }
+            _discreteInputOverrider.StopOverriding(guid);
         }
 
-        public void StopOverridingInputRegisters(IEnumerable<int> addresses)
+        public void RemoveHoldingRegisterOverride(Guid guid)
         {
-            foreach (var address in addresses)
-            {
-                _inputRegisterOverrider.StopOverriding(address);
-            }
+            _holdingRegisterOverrider.StopOverriding(guid);
         }
 
-        public void StopOverridingHoldingRegisters(IEnumerable<int> addresses)
+        public void RemoveInputRegisterOverride(Guid guid)
         {
-            foreach (var address in addresses)
-            {
-                _holdingRegisterOverrider.StopOverriding(address);
-            }
-
-            CallHoldingRegistersChanged(addresses);
-        }
-
-        public IEnumerable<KeyValuePair<int, bool>> GetCoilOverrides() => _coilOverrider.Overrides;
-
-        public IEnumerable<KeyValuePair<int, bool>> GetDiscreteInputOverrides() => _discreteInputOverrider.Overrides;
-
-        public IEnumerable<KeyValuePair<int, ushort>> GetInputRegisterOverrides() => _inputRegisterOverrider.Overrides;
-
-        public IEnumerable<KeyValuePair<int, ushort>> GetHoldingRegisterOverrides() => _holdingRegisterOverrider.Overrides;
-
-        private void CallCoilsChanged(IEnumerable<int> addresses)
-        {
-            var aggregated = AggregateAddresses(addresses);
-            foreach (var (address, length) in aggregated)
-            {
-                CoilsChanged(address, length);
-            }
-        }
-
-        private void CallHoldingRegistersChanged(IEnumerable<int> addresses)
-        {
-            var aggregated = AggregateAddresses(addresses);
-            foreach (var (address, length) in aggregated)
-            {
-                HoldingRegistersChanged(address, length);
-            }
-        }
-
-        private Dictionary<int, int> AggregateAddresses(IEnumerable<int> addresses)
-        {
-            if (addresses.Count() == 0)
-                return default;
-
-            var sorted = addresses
-                .Distinct()
-                .OrderBy(x => x)
-                .ToArray();
-
-            var addressesToLengths = new Dictionary<int, int>();
-
-            int startOfCurrentSequence = sorted[0];
-            addressesToLengths[startOfCurrentSequence] = 1;
-            for (int i = 1; i < sorted.Length; ++i)
-            {
-                var subsequentAddressesDiff = sorted[i] - sorted[i - 1];
-                if (subsequentAddressesDiff > 1)
-                {
-                    startOfCurrentSequence = sorted[i];
-                    addressesToLengths[startOfCurrentSequence] = 1;
-                }
-                else
-                {
-                    addressesToLengths[startOfCurrentSequence] += 1;
-                }
-            }
-
-            return addressesToLengths;
+            _inputRegisterOverrider.StopOverriding(guid);
         }
     }
 }

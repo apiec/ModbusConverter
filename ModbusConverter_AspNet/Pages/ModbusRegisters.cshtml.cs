@@ -11,13 +11,14 @@ namespace ModbusConverter.Pages
     public class ModbusRegistersModel : PageModel
     {
         private readonly IModbusServerWrapper _modbusServerWrapper;
+        private const int MAX_ADDRESS = 10000;
 
         public ModbusRegistersModel(IModbusServerWrapper modbusServerWrapper)
         {
             _modbusServerWrapper = modbusServerWrapper;
         }
 
-        public class RegisterRow
+        public record RegisterRow
         {
             public int? Address { get; set; }
             public bool? CoilValue { get; set; }
@@ -29,10 +30,19 @@ namespace ModbusConverter.Pages
         [BindProperty] public int StartingAddress { get; set; }
         [BindProperty] public int NumberOfRowsToDisplay { get; set; }
 
-        public List<RegisterRow> Rows
+        public IEnumerable<RegisterRow> Rows
         {
             get
             {
+                if (StartingAddress < 0 )
+                {
+                    StartingAddress = 0;
+                }
+                else if (StartingAddress + NumberOfRowsToDisplay >= MAX_ADDRESS)
+                {
+                    StartingAddress = MAX_ADDRESS - NumberOfRowsToDisplay;
+                }
+
                 var coils = _modbusServerWrapper.ReadCoils(StartingAddress, NumberOfRowsToDisplay);
                 var discreteInputs = _modbusServerWrapper.ReadDiscreteInputs(StartingAddress, NumberOfRowsToDisplay);
                 var inputRegisters = _modbusServerWrapper.ReadInputRegisters(StartingAddress, NumberOfRowsToDisplay);
@@ -51,10 +61,9 @@ namespace ModbusConverter.Pages
                     });
                 }
 
-                return Rows;
+                return result;
             }
         }
-
 
         public void OnGet()
         {

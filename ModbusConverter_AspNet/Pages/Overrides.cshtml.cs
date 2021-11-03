@@ -8,71 +8,106 @@ using ModbusConverter.Modbus;
 
 namespace ModbusConverter.Pages
 {
+    public class OverridesRow
+    {
+        public int? CoilAddress { get; set; }
+        public bool? CoilValue { get; set; }
+        public int? DiscreteInputAddress { get; set; }
+        public bool? DiscreteInputValue { get; set; }
+        public int? InputRegisterAddress { get; set; }
+        public int? InputRegisterValue { get; set; }
+        public int? HoldingRegisterAddress { get; set; }
+        public int? HoldingRegisterValue { get; set; }
+    }
+
+
+    public class OverrideRow
+    {
+        public Guid Guid { get; set; }
+        public int Address { get; set; }
+        public string Formula { get; set; }
+    }
+
+    public class DynamicOverridesRow
+    {
+        public OverrideRow CoilRow { get; set; }
+        public OverrideRow DiscreteInputRow { get; set; }
+        public OverrideRow InputRegisterRow { get; set; }
+        public OverrideRow HoldingRegisterRow { get; set; }
+
+    }
+
     public class OverridesModel : PageModel
     {
 
-        public OverridesModel(IModbusOverrider modbusOverrider)
+        public OverridesModel(IOverridesManager overridesManager, IModbusServerWrapper modbusServerWrapper)
         {
-            ModbusOverrider = modbusOverrider;
+            OverridesManager = overridesManager;
+            ModbusServerWrapper = modbusServerWrapper;
         }
-        public IModbusOverrider ModbusOverrider { get; set; }
+        
+        public IOverridesManager OverridesManager { get; }
+        public IModbusServerWrapper ModbusServerWrapper { get; }
         [BindProperty] public int Address { get; set; }
-        [BindProperty] public ushort Value { get; set; }
-        [BindProperty] public bool BoolValue { get; set; }
+        [BindProperty] public string Expression { get; set; }
         [BindProperty] public string RegisterType { get; set; }
+        [BindProperty] public DataType DataType { get; set; }
+        [BindProperty] public Guid Guid { get; set; }
 
-
-        public class OverridesRow
-        {
-            public int? CoilAddress { get; set; }
-            public bool? CoilValue { get; set; }
-            public int? DiscreteInputAddress { get; set; }
-            public bool? DiscreteInputValue { get; set; }
-            public int? InputRegisterAddress { get; set; }
-            public int? InputRegisterValue { get; set; }
-            public int? HoldingRegisterAddress { get; set; }
-            public int? HoldingRegisterValue { get; set; }
-        }
-        public List<OverridesRow> Rows
+        public List<DynamicOverridesRow> DynamicOverridesRows
         {
             get
             {
-                var result = new List<OverridesRow>();
-                var coilOverrides = ModbusOverrider.GetCoilOverrides()
-                    .OrderBy(p => p.Key)
-                    .ToArray();
-                var discreteOverrides = ModbusOverrider.GetDiscreteInputOverrides()
-                    .OrderBy(p => p.Key)
-                    .ToArray();
-                var inputOverrides = ModbusOverrider.GetInputRegisterOverrides()
-                    .OrderBy(p => p.Key)
-                    .ToArray();
-                var holdingOverrides = ModbusOverrider.GetHoldingRegisterOverrides()
-                    .OrderBy(p => p.Key)
-                    .ToArray();
+                var result = new List<DynamicOverridesRow>();
+                var coilOverrides = OverridesManager.CoilsOverrides.OrderBy(p => p.Address).ToArray();
+                var discreteOverrides = OverridesManager.DiscreteInputsOverrides.OrderBy(p => p.Address).ToArray();
+                var inputOverrides = OverridesManager.InputRegistersOverrides.OrderBy(p => p.Address).ToArray();
+                var holdingOverrides = OverridesManager.HoldingRegistersOverrides.OrderBy(p => p.Address).ToArray();
 
                 var lens = new int[] { coilOverrides.Count(), discreteOverrides.Count(), inputOverrides.Count(), holdingOverrides.Count() };
 
                 for (int i = 0; i < lens.Max(); ++i)
                 {
-                    result.Add(new OverridesRow
+                    result.Add(new DynamicOverridesRow
                     {
-                        CoilAddress = i < coilOverrides.Count() ? coilOverrides[i].Key : null,
-                        CoilValue = i < coilOverrides.Count() ? coilOverrides[i].Value : null,
-                        DiscreteInputAddress =  i < discreteOverrides.Count() ? discreteOverrides[i].Key : null,
-                        DiscreteInputValue = i < discreteOverrides.Count() ? discreteOverrides[i].Value : null,
-                        InputRegisterAddress = i < inputOverrides.Count() ? inputOverrides[i].Key : null,
-                        InputRegisterValue = i < inputOverrides.Count() ? inputOverrides[i].Value : null,
-                        HoldingRegisterAddress = i < holdingOverrides.Count() ? holdingOverrides[i].Key : null,
-                        HoldingRegisterValue = i < holdingOverrides.Count() ? holdingOverrides[i].Value : null,
+                        CoilRow = i < coilOverrides.Count()
+                        ? new OverrideRow
+                        {
+                            Guid = coilOverrides[i].Guid,
+                            Address = coilOverrides[i].Address,
+                            Formula = coilOverrides[i].OverrideExpression
+                        }
+                        : null,
+                        DiscreteInputRow = i < discreteOverrides.Count()
+                        ? new OverrideRow
+                        {
+                            Guid = discreteOverrides[i].Guid,
+                            Address = discreteOverrides[i].Address,
+                            Formula = discreteOverrides[i].OverrideExpression
+                        }
+                        : null,
+                        InputRegisterRow = i < inputOverrides.Count()
+                        ? new OverrideRow
+                        {
+                            Guid = inputOverrides[i].Guid,
+                            Address = inputOverrides[i].Address,
+                            Formula = inputOverrides[i].OverrideExpression
+                        }
+                        : null,
+                        HoldingRegisterRow = i < holdingOverrides.Count()
+                        ? new OverrideRow
+                        {
+                            Guid = holdingOverrides[i].Guid,
+                            Address = holdingOverrides[i].Address,
+                            Formula = holdingOverrides[i].OverrideExpression
+                        }
+                        : null
                     });
                 }
 
                 return result;
             }
         }
-
-
 
         public void OnPostAdd()
         {
@@ -89,30 +124,24 @@ namespace ModbusConverter.Pages
                 return;
             }
 
-            var boolDict = new Dictionary<int, bool>();
-            var ushortDict = new Dictionary<int, ushort>();
+
             switch (registerType)
             {
                 case ModbusRegisterType.Coil:
-                    boolDict.Add(Address, BoolValue);
-                    ModbusOverrider.OverrideCoils(boolDict);
+                    OverridesManager.AddCoilOverride(Address, Expression);
                     break;
                 case ModbusRegisterType.DiscreteInput:
-                    boolDict.Add(Address, BoolValue);
-                    ModbusOverrider.OverrideDiscreteInputs(boolDict);
+                    OverridesManager.AddDiscreteInputOverride(Address, Expression);
                     break;
                 case ModbusRegisterType.InputRegister:
-                    ushortDict.Add(Address, Value);
-                    ModbusOverrider.OverrideInputRegisters(ushortDict);
+                    OverridesManager.AddInputRegisterOverride(Address, Expression, DataType);
                     break;
                 case ModbusRegisterType.HoldingRegister:
-                    ushortDict.Add(Address, Value);
-                    ModbusOverrider.OverrideHoldingRegisters(ushortDict);
+                    OverridesManager.AddHoldingRegisterOverride(Address, Expression, DataType);
                     break;
             }
             Address = 0;
-            BoolValue = false;
-            Value = 0;
+            Expression = string.Empty;
         }
 
         public void OnPostRemove()
@@ -130,26 +159,24 @@ namespace ModbusConverter.Pages
                 return;
             }
 
-            var array = new int[] { Address };
             switch (registerType)
             {
                 case ModbusRegisterType.Coil:
-                    ModbusOverrider.StopOverridingCoils(array);
+                    OverridesManager.RemoveCoilOverride(Guid);
                     break;
                 case ModbusRegisterType.DiscreteInput:
-                    ModbusOverrider.StopOverridingDiscreteInputs(array);
+                    OverridesManager.RemoveDiscreteInputOverride(Guid);
                     break;
                 case ModbusRegisterType.InputRegister:
-                    ModbusOverrider.StopOverridingInputRegisters(array);
+                    OverridesManager.RemoveInputRegisterOverride(Guid);
                     break;
                 case ModbusRegisterType.HoldingRegister:
-                    ModbusOverrider.StopOverridingHoldingRegisters(array);
+                    OverridesManager.RemoveHoldingRegisterOverride(Guid);
                     break;
             }
 
             Address = 0;
-            BoolValue = false;
-            Value = 0;
+            Expression = string.Empty;
         }
     }
 }

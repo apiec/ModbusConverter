@@ -17,12 +17,6 @@ using ModbusConverter.Modbus;
 
 namespace ModbusConverter
 {
-    public class TypeHaver
-    {
-        public string Type { get; set; }
-    }
-
-
     public class Startup
     {
         public Startup(IWebHostEnvironment env)
@@ -49,7 +43,7 @@ namespace ModbusConverter
             services.AddSingleton<OverridingModbusServerWrapper>();
 
             services.AddSingleton<IModbusServerWrapper>(provider => provider.GetRequiredService<OverridingModbusServerWrapper>());
-            services.AddSingleton<IModbusOverrider>(provider => provider.GetRequiredService<OverridingModbusServerWrapper>());
+            services.AddSingleton<IOverridesManager>(provider => provider.GetRequiredService<OverridingModbusServerWrapper>());
             
             services.AddSingleton<IPeripheralsManager, PeripheralsManager>();
             services.AddSingleton<IPeripheralsFactory, PeripheralsFactory>();
@@ -76,7 +70,7 @@ namespace ModbusConverter
             ModbusServerStartListening(app);
         }
 
-        private void ModbusServerStartListening(IApplicationBuilder app)
+        private static void ModbusServerStartListening(IApplicationBuilder app)
         {
             var server = app.ApplicationServices.GetRequiredService<ModbusServer>();
 

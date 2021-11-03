@@ -10,12 +10,12 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 {
     public abstract class InputPeripheral : IPeripheral
     {
-        private readonly IModbusServerWrapper _modbusServerProxy;
+        private readonly IModbusServerWrapper _modbusServerWrapper;
         private readonly Dictionary<ModbusRegisterType, Action> _saveDataActions;
 
-        public InputPeripheral(IModbusServerWrapper modbusServerProxy)
+        public InputPeripheral(IModbusServerWrapper modbusServerWrapper)
         {
-            _modbusServerProxy = modbusServerProxy;
+            _modbusServerWrapper = modbusServerWrapper;
             _saveDataActions = new Dictionary<ModbusRegisterType, Action>
             {
                 { ModbusRegisterType.Coil, SaveDataToCoils },
@@ -41,25 +41,25 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         private void SaveDataToCoils()
         {
             var data = ReadDataAsBools();
-            _modbusServerProxy.WriteToCoils(RegisterAddress, data);
+            _modbusServerWrapper.WriteToCoils(RegisterAddress, data);
         }
 
         private void SaveDataToDiscreteInputs()
         {
             var data = ReadDataAsBools();
-            _modbusServerProxy.WriteToDiscreteInputs(RegisterAddress, data);
+            _modbusServerWrapper.WriteToDiscreteInputs(RegisterAddress, data);
         }
 
         private void SaveDataToInputRegisters()
         {
             var data = ReadDataAsUshorts();
-            _modbusServerProxy.WriteToInputRegisters(RegisterAddress, data);
+            _modbusServerWrapper.WriteToInputRegisters(RegisterAddress, data);
         }
 
         private void SaveDataToHoldingRegisters()
         {
             var data = ReadDataAsUshorts();
-            _modbusServerProxy.WriteToHoldingRegisters(RegisterAddress, data);
+            _modbusServerWrapper.WriteToHoldingRegisters(RegisterAddress, data);
         }
 
         protected abstract bool[] ReadDataAsBools();
