@@ -23,8 +23,8 @@
                             <input asp-for="Address" />
                         </div>
                         <div>
-                            <label asp-for="Value"></label>
-                            <input type="checkbox" asp-for="BoolValue" />
+                            <label asp-for="Expression"></label>
+                            <input asp-for="Expression" />
                         </div>
                         <div>
                             <button asp-page-handler="Add">Add</button>
@@ -39,8 +39,8 @@
                             <input asp-for="Address" />
                         </div>
                         <div>
-                            <label asp-for="Value"></label>
-                            <input type="checkbox" asp-for="BoolValue" />
+                            <label asp-for="Expression"></label>
+                            <input asp-for="Expression" />
                         </div>
                         <div>
                             <button asp-page-handler="Add">Add</button>
@@ -55,8 +55,12 @@
                             <input asp-for="Address" />
                         </div>
                         <div>
-                            <label asp-for="Value"></label>
-                            <input asp-for="Value" />
+                            <label asp-for="Expression"></label>
+                            <input asp-for="Expression" />
+                        </div>
+                        <div>
+                            <label asp-for="DataType"></label>
+                            <select asp-for="DataType" asp-items="Html.GetEnumSelectList<DataType>()"></select>
                         </div>
                         <div>
                             <button asp-page-handler="Add">Add</button>
@@ -71,8 +75,12 @@
                             <input asp-for="Address" />
                         </div>
                         <div>
-                            <label asp-for="Value"></label>
-                            <input asp-for="Value" />
+                            <label asp-for="Expression"></label>
+                            <input asp-for="Expression" />
+                        </div>
+                        <div>
+                            <label asp-for="DataType"></label>
+                            <select asp-for="DataType" asp-items="Html.GetEnumSelectList<DataType>()"></select>
                         </div>
                         <div>
                             <button asp-page-handler="Add">Add</button>
@@ -88,25 +96,24 @@
                     <td>Value</td>
                 }
             </tr>
-            @foreach (var row in Model.Rows)
+            @foreach (var row in Model.DynamicOverridesRows)
             {
                 <tr>
-                    @if (row.CoilAddress is not null)
+                    @if (row.CoilRow is not null)
                     {
                         <td>
                             <form method="post">
                                 <input hidden asp-for="RegisterType" value="@ModbusRegisterType.Coil.ToString()" />
-                                <input hidden asp-for="Address" value="@row.CoilAddress" />
+                                <input hidden asp-for="Address" value="@row.CoilRow.Address" />
+                                <input hidden asp-for="Guid" value="@row.CoilRow.Guid" />
                                 <button asp-page-handler="Remove">−</button>
                             </form>
                         </td>
                         <td>
-                            @row.CoilAddress
+                            @row.CoilRow.Address
                         </td>
                         <td>
-                            <form method="post">
-                                @row.CoilValue
-                            </form>
+                            @row.CoilRow.Formula
                         </td>
                     }
                     else
@@ -116,20 +123,21 @@
                         <td></td>
                     }
 
-                    @if (row.DiscreteInputAddress is not null)
+                    @if (row.DiscreteInputRow is not null)
                     {
                         <td>
                             <form method="post">
                                 <input hidden asp-for="RegisterType" value="@ModbusRegisterType.DiscreteInput.ToString()" />
-                                <input hidden asp-for="Address" value="@row.DiscreteInputAddress" />
+                                <input hidden asp-for="Address" value="@row.DiscreteInputRow.Address" />
+                                <input hidden asp-for="Guid" value="@row.DiscreteInputRow.Guid" />
                                 <button asp-page-handler="Remove">−</button>
                             </form>
                         </td>
                         <td>
-                            @row.DiscreteInputAddress
+                            @row.DiscreteInputRow.Address
                         </td>
                         <td>
-                            @row.DiscreteInputValue
+                            @row.DiscreteInputRow.Formula
                         </td>
                     }
                     else
@@ -139,20 +147,21 @@
                         <td></td>
                     }
 
-                    @if (row.InputRegisterAddress is not null)
+                    @if (row.InputRegisterRow is not null)
                     {
                         <td>
                             <form method="post">
                                 <input hidden asp-for="RegisterType" value="@ModbusRegisterType.InputRegister.ToString()" />
-                                <input hidden asp-for="Address" value="@row.InputRegisterAddress" />
+                                <input hidden asp-for="Address" value="@row.InputRegisterRow.Address" />
+                                <input hidden asp-for="Guid" value="@row.InputRegisterRow.Guid" />
                                 <button asp-page-handler="Remove">−</button>
                             </form>
                         </td>
                         <td>
-                            @row.InputRegisterAddress
+                            @row.InputRegisterRow.Address
                         </td>
                         <td>
-                            @row.InputRegisterValue?.ToString("X4")
+                            @row.InputRegisterRow.Formula
                         </td>
                     }
                     else
@@ -162,20 +171,21 @@
                         <td></td>
                     }
 
-                    @if (row.HoldingRegisterAddress is not null)
+                    @if (row.HoldingRegisterRow is not null)
                     {
                         <td>
                             <form method="post">
                                 <input hidden asp-for="RegisterType" value="@ModbusRegisterType.HoldingRegister.ToString()" />
-                                <input hidden asp-for="Address" value="@row.HoldingRegisterAddress" />
+                                <input hidden asp-for="Address" value="@row.HoldingRegisterRow.Address" />
+                                <input hidden asp-for="Guid" value="@row.HoldingRegisterRow.Guid" />
                                 <button asp-page-handler="Remove">−</button>
                             </form>
                         </td>
                         <td>
-                            @row.HoldingRegisterAddress
+                            @row.HoldingRegisterRow.Address
                         </td>
                         <td>
-                            @row.HoldingRegisterValue?.ToString("X4")
+                            @row.HoldingRegisterRow.Formula
                         </td>
                     }
                     else

@@ -13,6 +13,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
     {
         private readonly IModbusServerWrapper _modbusServerWrapper;
         private readonly Dictionary<ModbusRegisterType, Func<T>> _readValueFuncs;
+        private T _previousValue;
 
         public OutputPeripheral(IModbusServerWrapper modbusServerWrapper)
         {
@@ -35,12 +36,17 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public void Update() => ReadRegisterAndWriteToOutput();
 
+        
         private void ReadRegisterAndWriteToOutput()
         {
             var readValueFunc = _readValueFuncs[RegisterType];
             var value = readValueFunc();
-
-            WriteValueToOutput(value);
+            
+            if (value.Equals(_previousValue) is false)
+            {
+                WriteValueToOutput(value);
+                _previousValue = value;
+            }
         }
 
         private T ReadValueFromCoils()

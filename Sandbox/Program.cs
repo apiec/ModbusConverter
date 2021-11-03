@@ -9,8 +9,12 @@ namespace Sandbox
     {
         static void Main(string[] args)
         {
-            var e = new Expression("43ydfdlkj");
-
+            var e = new Expression("~x");
+            e.addArguments(new Argument("x"));
+            e.setArgumentValue("x", -1.0);
+            Console.WriteLine(e.calculate());
+            
+            e.setArgumentValue("x", 0.0);
             Console.WriteLine(e.calculate());
 
         }
