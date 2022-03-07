@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ModbusConverter.PeripheralDevices.AnalogIO
 {
@@ -32,11 +30,11 @@ namespace ModbusConverter.PeripheralDevices.AnalogIO
 
             var device = _pcf8591Devices[pcf8591Number];
             byte input = 0;
-            lock(device)
+            lock (device)
             {
                 input = device.ReadInput(inputMode);
             }
-            
+
             return input;
         }
 

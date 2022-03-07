@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Device.Gpio;
+﻿using ModbusConverter.Modbus;
 using ModbusConverter.PeripheralDevices.Config;
-using ModbusConverter.Modbus;
+using System;
+using System.Device.Gpio;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -28,7 +25,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             }
         }
 
-        
+
         public int PinNumber
         {
             get => _pinNumber;

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using EasyModbus;
+﻿using EasyModbus;
 using org.mariuszgromada.math.mxparser;
+using System;
+using System.Linq;
 
 namespace ModbusConverter.Modbus
 {
@@ -20,7 +19,7 @@ namespace ModbusConverter.Modbus
     public class DynamicOverride
     {
         private static readonly string _argumentName = "x";
-        private readonly Argument _argument = new (_argumentName);
+        private readonly Argument _argument = new(_argumentName);
         private readonly Expression _overrideExpression;
 
         public DynamicOverride()

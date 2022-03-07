@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using ModbusConverter.Modbus;
 using ModbusConverter.PeripheralDevices.AnalogIO;
+using ModbusConverter.PeripheralDevices.Config;
+using System;
+using System.Collections.Generic;
 using System.Device.Gpio;
 using System.Device.Pwm;
-using Microsoft.Extensions.Configuration;
-using ModbusConverter.PeripheralDevices.Config;
-using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -65,7 +63,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
                 peripheral.Name = peripheralConfig.Name;
                 peripheral.RegisterAddress = peripheralConfig.RegisterAddress;
-            
+
                 var registerType = Enum.Parse(typeof(ModbusRegisterType), peripheralConfig.RegisterType);
                 peripheral.RegisterType = (ModbusRegisterType)registerType;
 

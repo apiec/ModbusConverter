@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Device.Pwm;
-using EasyModbus;
-using System.Device.Gpio;
-using ModbusConverter.PeripheralDevices.Config;
+﻿using EasyModbus;
 using ModbusConverter.Modbus;
+using ModbusConverter.PeripheralDevices.Config;
+using System;
+using System.Device.Pwm;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {

@@ -103,7 +103,7 @@
   {
     "PCF8591Number": 1,
     "InputMode": "Differential_AIN2_AIN3",
-    "Type": "AnalogInputChannel",
+    "Type": "AnalogInputChannel", 
     "RegisterType": "HoldingRegister",
     "RegisterAddress": 5,
     "Name": "ADC-1-0_1"

@@ -1,8 +1,7 @@
-﻿using System;
+﻿using EasyModbus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using EasyModbus;
 
 namespace ModbusConverter.Modbus
 {

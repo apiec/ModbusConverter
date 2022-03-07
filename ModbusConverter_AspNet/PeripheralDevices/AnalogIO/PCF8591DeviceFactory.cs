@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Device.I2c;
-using Microsoft.Extensions.Configuration;
 
 namespace ModbusConverter.PeripheralDevices.AnalogIO
 {

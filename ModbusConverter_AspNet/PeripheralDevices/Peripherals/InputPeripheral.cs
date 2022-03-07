@@ -1,10 +1,7 @@
-﻿using EasyModbus;
+﻿using ModbusConverter.Modbus;
 using ModbusConverter.PeripheralDevices.Config;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ModbusConverter.Modbus;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {

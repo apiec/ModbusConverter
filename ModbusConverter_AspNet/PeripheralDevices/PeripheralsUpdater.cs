@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Extensions.Hosting;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
-using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace ModbusConverter.PeripheralDevices
 {

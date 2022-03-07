@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EasyModbus;
+﻿using ModbusConverter.Modbus;
 using ModbusConverter.PeripheralDevices.Config;
-using ModbusConverter.Modbus;
+using System;
+using System.Collections.Generic;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -36,12 +33,12 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
         public void Update() => ReadRegisterAndWriteToOutput();
 
-        
+
         private void ReadRegisterAndWriteToOutput()
         {
             var readValueFunc = _readValueFuncs[RegisterType];
             var value = readValueFunc();
-            
+
             if (value.Equals(_previousValue) is false)
             {
                 WriteValueToOutput(value);
@@ -95,7 +92,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
                 }
             }
         }
-        
+
         public virtual unsafe int DataLengthInRegisters => (sizeof(T) + sizeof(ushort) - 1) / sizeof(ushort);
 
         protected abstract T ReadValueFromBools(bool[] bools);

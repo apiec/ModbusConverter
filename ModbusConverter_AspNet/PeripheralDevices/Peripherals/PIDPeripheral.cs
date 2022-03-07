@@ -1,10 +1,7 @@
-﻿using ModbusConverter.Modbus;
+﻿using EasyModbus;
+using ModbusConverter.Modbus;
 using ModbusConverter.PeripheralDevices.Config;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EasyModbus;
 using System.Diagnostics;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
@@ -90,11 +87,13 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             get => ReadDoubleFromAddress(KpAddress);
             set => WriteDoubleToAddress(KpAddress, value);
         }
-        public double Ki {
+        public double Ki
+        {
             get => ReadDoubleFromAddress(KiAddress);
             set => WriteDoubleToAddress(KiAddress, value);
         }
-        public double Kd {
+        public double Kd
+        {
             get => ReadDoubleFromAddress(KdAddress);
             set => WriteDoubleToAddress(KdAddress, value);
         }
@@ -103,7 +102,8 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             get => ReadDoubleFromAddress(MaxAddress);
             set => WriteDoubleToAddress(MaxAddress, value);
         }
-        public double Min {
+        public double Min
+        {
             get => ReadDoubleFromAddress(MinAddress);
             set => WriteDoubleToAddress(MinAddress, value);
         }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using org.mariuszgromada.math.mxparser;
 
 namespace ModbusConverter.Modbus
 {
@@ -59,7 +57,7 @@ namespace ModbusConverter.Modbus
                 {
                     result = @override.Calculate(newData);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     result = newData;
                 }
@@ -86,7 +84,7 @@ namespace ModbusConverter.Modbus
                 }
                 else
                 {
-                    if(currentData.Any())
+                    if (currentData.Any())
                     {
                         _dataSetter(currentAddress, currentData.ToArray());
                         currentData.Clear();

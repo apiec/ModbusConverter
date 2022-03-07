@@ -1,19 +1,15 @@
+using EasyModbus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using EasyModbus;
+using ModbusConverter.Modbus;
 using ModbusConverter.PeripheralDevices;
-using System.Device.Gpio;
-using Microsoft.Extensions.Configuration;
-using ModbusConverter.PeripheralDevices.Peripherals;
 using ModbusConverter.PeripheralDevices.AnalogIO;
 using ModbusConverter.PeripheralDevices.Config;
-using ModbusConverter.Modbus;
+using ModbusConverter.PeripheralDevices.Peripherals;
+using System.Device.Gpio;
 
 namespace ModbusConverter
 {
@@ -44,7 +40,7 @@ namespace ModbusConverter
 
             services.AddSingleton<IModbusServerWrapper>(provider => provider.GetRequiredService<OverridingModbusServerWrapper>());
             services.AddSingleton<IOverridesManager>(provider => provider.GetRequiredService<OverridingModbusServerWrapper>());
-            
+
             services.AddSingleton<IPeripheralsManager, PeripheralsManager>();
             services.AddSingleton<IPeripheralsFactory, PeripheralsFactory>();
             services.AddSingleton<IPeripheralsConfigFile, PeripheralsConfigFile>();

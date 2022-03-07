@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ModbusConverter.Modbus;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ModbusConverter.Pages
 {
@@ -45,7 +44,7 @@ namespace ModbusConverter.Pages
             OverridesManager = overridesManager;
             ModbusServerWrapper = modbusServerWrapper;
         }
-        
+
         public IOverridesManager OverridesManager { get; }
         public IModbusServerWrapper ModbusServerWrapper { get; }
         [BindProperty] public int Address { get; set; }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Device.I2c;
+﻿using System.Device.I2c;
 
 namespace ModbusConverter.PeripheralDevices.AnalogIO
 {
@@ -19,7 +15,7 @@ namespace ModbusConverter.PeripheralDevices.AnalogIO
 
             Differential_AIN0_AIN3 = PCF8591Codes.ADC_DIFF_0_3,
             Differential_AIN1_AIN3 = PCF8591Codes.ADC_DIFF_1_3,
-                                        
+
             Differential_AIN0_AIN1 = PCF8591Codes.ADC_DIFF_0_1,
             Differential_AIN2_AIN3 = PCF8591Codes.ADC_DIFF_2_3,
         }
