@@ -147,7 +147,139 @@ namespace ModbusConverterTests.Modbus
                 .BeEquivalentTo(expectedOutputRegisters);
         }
 
+        [Theory]
+        [InlineData("1", 10, 1)]
+        [InlineData("0", 10, 0)]
+        [InlineData("x", 10, 10)]
+        [InlineData("x", 0, 0)]
+        [InlineData("x-10", 1, -9)]
+        [InlineData("x*10", 10, 100)]
+        [InlineData("x/10", 100, 10)]
+        [InlineData("x/10", 105, 10)]
+        [InlineData("x^2", 10, 100)]
+        [InlineData("x^2", -1, 1)]
+        [InlineData("10+x^2", 2, 14)]
+        public void Calculate_DataTypeIsInt32_ShouldGiveProperResults(
+            string expression, int input, int expectedOutput)
+        {
+            //Arrange
+            var dataType = DataType.Int32;
+            var dynamicOverride = new DynamicOverride();
+            dynamicOverride.DataType = dataType;
+            dynamicOverride.OverrideExpression = expression;
 
+            var inputRegisters = ConvertDataToRegisters(dataType, input);
+            var expectedOutputRegisters = ConvertDataToRegisters(dataType, expectedOutput);
+
+            //Act
+            var outputRegisters = dynamicOverride.Calculate(inputRegisters);
+
+            //Assert
+            outputRegisters
+                .Should()
+                .BeEquivalentTo(expectedOutputRegisters);
+        }
+
+        [Theory]
+        [InlineData("1", 10, 1)]
+        [InlineData("0", 10, 0)]
+        [InlineData("x", 10, 10)]
+        [InlineData("x", 0, 0)]
+        [InlineData("x-10", 1, -9)]
+        [InlineData("x*10", 10, 100)]
+        [InlineData("x/10", 100, 10)]
+        [InlineData("x/10", 105, 10)]
+        [InlineData("x^2", 10, 100)]
+        [InlineData("x^2", -1, 1)]
+        [InlineData("10+x^2", 2, 14)]
+        public void Calculate_DataTypeIsInt64_ShouldGiveProperResults(
+            string expression, long input, long expectedOutput)
+        {
+            //Arrange
+            var dataType = DataType.Int64;
+            var dynamicOverride = new DynamicOverride();
+            dynamicOverride.DataType = dataType;
+            dynamicOverride.OverrideExpression = expression;
+
+            var inputRegisters = ConvertDataToRegisters(dataType, input);
+            var expectedOutputRegisters = ConvertDataToRegisters(dataType, expectedOutput);
+
+            //Act
+            var outputRegisters = dynamicOverride.Calculate(inputRegisters);
+
+            //Assert
+            outputRegisters
+                .Should()
+                .BeEquivalentTo(expectedOutputRegisters);
+        }
+
+        [Theory]
+        [InlineData("1", 10, 1)]
+        [InlineData("0", 10, 0)]
+        [InlineData("x", 10, 10)]
+        [InlineData("x", 0, 0)]
+        [InlineData("x-10", 1, -9)]
+        [InlineData("x*10", 10, 100)]
+        [InlineData("x/10", 100, 10)]
+        [InlineData("x/2", 1, 0.5)]
+        [InlineData("x/10", 105, 10.5)]
+        [InlineData("x^2", 10, 100)]
+        [InlineData("x^2", -1, 1)]
+        [InlineData("10+x^2", 2, 14)]
+        public void Calculate_DataTypeIsFloat_ShouldGiveProperResults(
+            string expression, float input, float expectedOutput)
+        {
+            //Arrange
+            var dataType = DataType.Float;
+            var dynamicOverride = new DynamicOverride();
+            dynamicOverride.DataType = dataType;
+            dynamicOverride.OverrideExpression = expression;
+
+            var inputRegisters = ConvertDataToRegisters(dataType, input);
+            var expectedOutputRegisters = ConvertDataToRegisters(dataType, expectedOutput);
+
+            //Act
+            var outputRegisters = dynamicOverride.Calculate(inputRegisters);
+
+            //Assert
+            outputRegisters
+                .Should()
+                .BeEquivalentTo(expectedOutputRegisters);
+        }
+
+        [Theory]
+        [InlineData("1", 10, 1)]
+        [InlineData("0", 10, 0)]
+        [InlineData("x", 10, 10)]
+        [InlineData("x", 0, 0)]
+        [InlineData("x-10", 1, -9)]
+        [InlineData("x*10", 10, 100)]
+        [InlineData("x/10", 100, 10)]
+        [InlineData("x/2", 1, 0.5)]
+        [InlineData("x/10", 105, 10.5)]
+        [InlineData("x^2", 10, 100)]
+        [InlineData("x^2", -1, 1)]
+        [InlineData("10+x^2", 2, 14)]
+        public void Calculate_DataTypeIsDouble_ShouldGiveProperResults(
+            string expression, double input, double expectedOutput)
+        {
+            //Arrange
+            var dataType = DataType.Double;
+            var dynamicOverride = new DynamicOverride();
+            dynamicOverride.DataType = dataType;
+            dynamicOverride.OverrideExpression = expression;
+
+            var inputRegisters = ConvertDataToRegisters(dataType, input);
+            var expectedOutputRegisters = ConvertDataToRegisters(dataType, expectedOutput);
+
+            //Act
+            var outputRegisters = dynamicOverride.Calculate(inputRegisters);
+
+            //Assert
+            outputRegisters
+                .Should()
+                .BeEquivalentTo(expectedOutputRegisters);
+        }
 
         private ushort[] ConvertDataToRegisters(DataType dataType, object data) =>
             dataType switch
