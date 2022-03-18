@@ -38,28 +38,18 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
             try
             {
-                IPeripheral peripheral;
-                switch (peripheralConfig)
+                IPeripheral peripheral = peripheralConfig switch
                 {
-                    case AnalogInputChannelConfig config:
-                        var inputMode = Enum.Parse(typeof(PCF8591Device.InputMode), config.InputMode);
-                        peripheral = CreateAnalogInputChannel(config.PCF8591Number, (PCF8591Device.InputMode)inputMode);
-                        break;
-                    case AnalogOutputChannelConfig config:
-                        peripheral = CreateAnalogOutputChannel(config.PCF8591Number);
-                        break;
-                    case InputPinConfig config:
-                        peripheral = CreateInputPin(config.PinNumber);
-                        break;
-                    case OutputPinConfig config:
-                        peripheral = CreateOutputPin(config.PinNumber);
-                        break;
-                    case PwmPinConfig config:
-                        peripheral = CreatePwmPin(config.PinNumber);
-                        break;
-                    default:
-                        throw new ArgumentException(nameof(peripheralConfig));
-                }
+                    AnalogInputChannelConfig config => CreateAnalogInputChannel(
+                        config.PCF8591Number, (PCF8591Device.InputMode)Enum.Parse(
+                            typeof(PCF8591Device.InputMode), config.InputMode)),
+                    AnalogOutputChannelConfig config => CreateAnalogOutputChannel(config.PCF8591Number),
+                    InputPinConfig config => CreateInputPin(config.PinNumber),
+                    OutputPinConfig config => CreateOutputPin(config.PinNumber),
+                    PwmPinConfig config => CreateOutputPin(config.PinNumber),
+
+                    _ => throw new ArgumentException(nameof(peripheralConfig))
+                };
 
                 peripheral.Name = peripheralConfig.Name;
                 peripheral.RegisterAddress = peripheralConfig.RegisterAddress;
