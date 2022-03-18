@@ -1,6 +1,5 @@
 ﻿using Xunit;
 using FluentAssertions;
-using Moq;
 using ModbusConverter.Modbus;
 using System;
 using EasyModbus;
