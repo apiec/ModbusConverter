@@ -126,7 +126,7 @@ namespace ModbusConverter.Modbus
         public IEnumerable<DynamicOverride> Overrides => _overrides.Values.AsEnumerable();
 
         private static bool DoRangesOverlap(int startA, int endA, int startB, int endB)
-            => startA <= endB && endA >= startB;
+            => startA < endB && endA > startB;
 
     }
 }
