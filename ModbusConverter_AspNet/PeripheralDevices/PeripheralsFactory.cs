@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Device.Gpio;
 using System.Device.Pwm;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -16,6 +17,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         private readonly IAnalogIOController _analogIOController;
         private readonly List<int> _pwmPins;
 
+        [RequiresUnreferencedCode(nameof(PeripheralsFactory))]
         public PeripheralsFactory(
             IModbusServerWrapper modbusServerWrapper,
             GpioController gpioController,
@@ -25,8 +27,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             _modbusServerWrapper = modbusServerWrapper;
             _gpioController = gpioController;
             _analogIOController = analogIOController;
-            _pwmPins = new List<int>();
-            configuration.GetSection("PWMPins").Bind(_pwmPins);
+            _pwmPins = configuration.GetSection("PWMPins").Get<List<int>>();
         }
 
         public IPeripheral CreateFromConfig(PeripheralConfig peripheralConfig)
@@ -46,7 +47,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
                     AnalogOutputChannelConfig config => CreateAnalogOutputChannel(config.PCF8591Number),
                     InputPinConfig config => CreateInputPin(config.PinNumber),
                     OutputPinConfig config => CreateOutputPin(config.PinNumber),
-                    PwmPinConfig config => CreateOutputPin(config.PinNumber),
+                    PwmPinConfig config => CreatePwmPin(config.PinNumber),
 
                     _ => throw new ArgumentException(nameof(peripheralConfig))
                 };

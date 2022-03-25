@@ -1,0 +1,9 @@
+[
+  {
+    "PinNumber": 17,
+    "Type": "InputPin",
+    "RegisterType": "Coil",
+    "RegisterAddress": 17,
+    "Name": "Input Pin 17"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "PCF8591Number": 0,
+    "InputMode": "Differential_AIN0_AIN1",
+    "Type": "AnalogInputChannel",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 1,
+    "Name": "ADC-0-0_1"
+  }
+]

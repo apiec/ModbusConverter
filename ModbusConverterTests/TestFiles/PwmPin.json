@@ -1,0 +1,9 @@
+[
+  {
+    "PinNumber": 12,
+    "Type": "PwmPin",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 20,
+    "Name": "PWM Pin 12"
+  }
+]

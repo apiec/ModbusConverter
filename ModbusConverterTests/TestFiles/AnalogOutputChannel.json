@@ -1,0 +1,9 @@
+[
+  {
+    "PCF8591Number": 1,
+    "Type": "AnalogOutputChannel",
+    "RegisterType": "HoldingRegister",
+    "RegisterAddress": 6,
+    "Name": "DAC-1"
+  }
+]

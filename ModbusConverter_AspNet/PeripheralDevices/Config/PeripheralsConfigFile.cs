@@ -2,6 +2,7 @@
 using ModbusConverter.PeripheralDevices.Peripherals;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -24,6 +25,7 @@ namespace ModbusConverter.PeripheralDevices.Config
             { nameof(PwmPin), typeof(PwmPinConfig) }
         };
 
+        [RequiresUnreferencedCode(nameof(PeripheralsConfigFile))]
         public PeripheralsConfigFile(
             IConfiguration configuration,
             IPeripheralsFactory peripheralsFactory)
@@ -75,6 +77,11 @@ namespace ModbusConverter.PeripheralDevices.Config
             if (peripheralElement.TryGetProperty("Type", out var typeElement))
             {
                 var typeName = typeElement.GetString();
+                if (!_typeNameToConfigTypeDict.ContainsKey(typeName))
+                {
+                    return null;
+                }
+
                 var type = _typeNameToConfigTypeDict[typeName];
 
                 var peripheralConfig = (PeripheralConfig)JsonSerializer.Deserialize(peripheralElement.GetRawText(), type, _jsonSerializerOptions);

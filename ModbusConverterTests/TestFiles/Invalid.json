@@ -1,0 +1,9 @@
+[
+  {
+    "PinNumber": 25,
+    "Type": "InvalidType",
+    "RegisterType": "Coil",
+    "RegisterAddress": 25,
+    "Name": "Incorrect Type"
+  }
+]
