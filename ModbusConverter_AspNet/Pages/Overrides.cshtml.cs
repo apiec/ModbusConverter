@@ -1,31 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ModbusConverter.Modbus;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ModbusConverter.Pages
 {
-    public class OverridesRow
-    {
-        public int? CoilAddress { get; set; }
-        public bool? CoilValue { get; set; }
-        public int? DiscreteInputAddress { get; set; }
-        public bool? DiscreteInputValue { get; set; }
-        public int? InputRegisterAddress { get; set; }
-        public int? InputRegisterValue { get; set; }
-        public int? HoldingRegisterAddress { get; set; }
-        public int? HoldingRegisterValue { get; set; }
-    }
-
-
     public class OverrideRow
     {
         public Guid Guid { get; set; }
         public int Address { get; set; }
-        public string Formula { get; set; }
+        public string OverrideExpression { get; set; }
+        public string DataType { get; set; }
     }
 
     public class DynamicOverridesRow
@@ -45,7 +32,7 @@ namespace ModbusConverter.Pages
             OverridesManager = overridesManager;
             ModbusServerWrapper = modbusServerWrapper;
         }
-        
+
         public IOverridesManager OverridesManager { get; }
         public IModbusServerWrapper ModbusServerWrapper { get; }
         [BindProperty] public int Address { get; set; }
@@ -75,7 +62,8 @@ namespace ModbusConverter.Pages
                         {
                             Guid = coilOverrides[i].Guid,
                             Address = coilOverrides[i].Address,
-                            Formula = coilOverrides[i].OverrideExpression
+                            OverrideExpression = coilOverrides[i].OverrideExpression,
+                            DataType = coilOverrides[i].DataType.ToString(),
                         }
                         : null,
                         DiscreteInputRow = i < discreteOverrides.Count()
@@ -83,7 +71,8 @@ namespace ModbusConverter.Pages
                         {
                             Guid = discreteOverrides[i].Guid,
                             Address = discreteOverrides[i].Address,
-                            Formula = discreteOverrides[i].OverrideExpression
+                            OverrideExpression = discreteOverrides[i].OverrideExpression,
+                            DataType = discreteOverrides[i].DataType.ToString(),
                         }
                         : null,
                         InputRegisterRow = i < inputOverrides.Count()
@@ -91,7 +80,8 @@ namespace ModbusConverter.Pages
                         {
                             Guid = inputOverrides[i].Guid,
                             Address = inputOverrides[i].Address,
-                            Formula = inputOverrides[i].OverrideExpression
+                            OverrideExpression = inputOverrides[i].OverrideExpression,
+                            DataType = inputOverrides[i].DataType.ToString(),
                         }
                         : null,
                         HoldingRegisterRow = i < holdingOverrides.Count()
@@ -99,7 +89,8 @@ namespace ModbusConverter.Pages
                         {
                             Guid = holdingOverrides[i].Guid,
                             Address = holdingOverrides[i].Address,
-                            Formula = holdingOverrides[i].OverrideExpression
+                            OverrideExpression = holdingOverrides[i].OverrideExpression,
+                            DataType = holdingOverrides[i].DataType.ToString(),
                         }
                         : null
                     });

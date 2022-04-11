@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using ModbusConverter.PeripheralDevices.Config;
+using ModbusConverter.PeripheralDevices.Peripherals;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using ModbusConverter.PeripheralDevices.Peripherals;
-using ModbusConverter.PeripheralDevices.Config;
 
 namespace ModbusConverter.PeripheralDevices
 {

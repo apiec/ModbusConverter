@@ -1,5 +1,4 @@
 ﻿using EasyModbus;
-using System.Collections.Generic;
 
 namespace ModbusConverter.Modbus
 {

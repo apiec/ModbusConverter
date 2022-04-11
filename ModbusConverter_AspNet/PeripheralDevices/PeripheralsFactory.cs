@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using ModbusConverter.Modbus;
 using ModbusConverter.PeripheralDevices.AnalogIO;
+using ModbusConverter.PeripheralDevices.Config;
+using System;
+using System.Collections.Generic;
 using System.Device.Gpio;
 using System.Device.Pwm;
-using Microsoft.Extensions.Configuration;
-using ModbusConverter.PeripheralDevices.Config;
-using ModbusConverter.Modbus;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -18,6 +17,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         private readonly IAnalogIOController _analogIOController;
         private readonly List<int> _pwmPins;
 
+        [RequiresUnreferencedCode(nameof(PeripheralsFactory))]
         public PeripheralsFactory(
             IModbusServerWrapper modbusServerWrapper,
             GpioController gpioController,
@@ -27,8 +27,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             _modbusServerWrapper = modbusServerWrapper;
             _gpioController = gpioController;
             _analogIOController = analogIOController;
-            _pwmPins = new List<int>();
-            configuration.GetSection("PWMPins").Bind(_pwmPins);
+            _pwmPins = configuration.GetSection("PWMPins").Get<List<int>>();
         }
 
         public IPeripheral CreateFromConfig(PeripheralConfig peripheralConfig)
@@ -40,32 +39,22 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
 
             try
             {
-                IPeripheral peripheral;
-                switch (peripheralConfig)
+                IPeripheral peripheral = peripheralConfig switch
                 {
-                    case AnalogInputChannelConfig config:
-                        var inputMode = Enum.Parse(typeof(PCF8591Device.InputMode), config.InputMode);
-                        peripheral = CreateAnalogInputChannel(config.PCF8591Number, (PCF8591Device.InputMode)inputMode);
-                        break;
-                    case AnalogOutputChannelConfig config:
-                        peripheral = CreateAnalogOutputChannel(config.PCF8591Number);
-                        break;
-                    case InputPinConfig config:
-                        peripheral = CreateInputPin(config.PinNumber);
-                        break;
-                    case OutputPinConfig config:
-                        peripheral = CreateOutputPin(config.PinNumber);
-                        break;
-                    case PwmPinConfig config:
-                        peripheral = CreatePwmPin(config.PinNumber);
-                        break;
-                    default:
-                        throw new ArgumentException(nameof(peripheralConfig));
-                }
+                    AnalogInputChannelConfig config => CreateAnalogInputChannel(
+                        config.PCF8591Number, (PCF8591Device.InputMode)Enum.Parse(
+                            typeof(PCF8591Device.InputMode), config.InputMode)),
+                    AnalogOutputChannelConfig config => CreateAnalogOutputChannel(config.PCF8591Number),
+                    InputPinConfig config => CreateInputPin(config.PinNumber),
+                    OutputPinConfig config => CreateOutputPin(config.PinNumber),
+                    PwmPinConfig config => CreatePwmPin(config.PinNumber),
+
+                    _ => throw new ArgumentException(nameof(peripheralConfig))
+                };
 
                 peripheral.Name = peripheralConfig.Name;
                 peripheral.RegisterAddress = peripheralConfig.RegisterAddress;
-            
+
                 var registerType = Enum.Parse(typeof(ModbusRegisterType), peripheralConfig.RegisterType);
                 peripheral.RegisterType = (ModbusRegisterType)registerType;
 

@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ModbusConverter.Modbus;
+using System.Collections.Generic;
 
 namespace ModbusConverter.Pages
 {
@@ -34,7 +31,7 @@ namespace ModbusConverter.Pages
         {
             get
             {
-                if (StartingAddress < 0 )
+                if (StartingAddress < 0)
                 {
                     StartingAddress = 0;
                 }

@@ -1,8 +1,7 @@
-﻿using System;
+﻿using EasyModbus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using EasyModbus;
 
 namespace ModbusConverter.Modbus
 {
@@ -194,7 +193,7 @@ namespace ModbusConverter.Modbus
             var result = new ushort[numberOfRegisters];
             for (int i = 0; i < numberOfRegisters; ++i)
             {
-                result[i] = _modbusServer.inputRegisters[address + i];
+                result[i] = _modbusServer.holdingRegisters[address + i];
             }
             return result;
         }

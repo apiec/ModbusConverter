@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Device.Gpio;
+﻿using ModbusConverter.Modbus;
 using ModbusConverter.PeripheralDevices.Config;
-using ModbusConverter.Modbus;
+using System;
+using System.Device.Gpio;
 
 namespace ModbusConverter.PeripheralDevices.Peripherals
 {
@@ -30,7 +27,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
         public int PinNumber
         {
             get => _pinNumber;
-            set 
+            set
             {
                 if (_gpioController.IsPinOpen(_pinNumber))
                 {
@@ -78,7 +75,7 @@ namespace ModbusConverter.PeripheralDevices.Peripherals
             {
                 _gpioController.OpenPin(PinNumber, PinMode.Output);
             }
-            else 
+            else
             if (_gpioController.GetPinMode(PinNumber) != PinMode.Output)
             {
                 _gpioController.SetPinMode(PinNumber, PinMode.Output);
