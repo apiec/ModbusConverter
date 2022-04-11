@@ -119,6 +119,14 @@ namespace ModbusConverterTests.Modbus
         }
 
         // TODO: Add tests for overrides that are only
-        // partly covering the data that is being written to
+        // partly covering the data that is being written to vvv
+
+        [Fact]
+        public void Write_OverrideCoversDataPartially_ShouldCallDataSetter()
+        {
+
+        }
+
+        
     }
 }

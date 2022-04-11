@@ -193,7 +193,7 @@ namespace ModbusConverter.Modbus
             var result = new ushort[numberOfRegisters];
             for (int i = 0; i < numberOfRegisters; ++i)
             {
-                result[i] = _modbusServer.inputRegisters[address + i];
+                result[i] = _modbusServer.holdingRegisters[address + i];
             }
             return result;
         }
